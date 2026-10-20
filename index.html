@@ -7,7 +7,6 @@
     <!-- Tailwind CSS CDN for modern responsive design -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Print-specific styles for clean PDF export across all devices */
         @media print {
             @page {
                 margin: 0;
@@ -96,12 +95,12 @@
                 </div>
             </div>
 
-            <!-- Quick Action Buttons matching user reference image -->
+            <!-- Quick Action Buttons -->
             <div class="flex flex-col gap-2">
                 <div class="flex items-center gap-2">
                     <span class="text-xs font-bold text-slate-600">QUICK ACTIONS:</span>
                     <button id="verifyDosagesBtn" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-3 rounded-xl text-xs transition shadow-sm flex items-center justify-center gap-1.5">
-                        <span>💊 Verify & Confirm Dosages</span>
+                        <span>💊 Verify & Confirm Dosages (Modify)</span>
                     </button>
                 </div>
                 <div class="flex flex-col sm:flex-row gap-2">
@@ -224,27 +223,27 @@ Doctor: Vitals check karwa lo. R50.9 fever aur R51 headache lag raha hai. Parace
                                     <th class="p-2.5">Instructions</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-slate-200 text-slate-800">
+                            <tbody id="prescriptionTableBody" class="divide-y divide-slate-200 text-slate-800">
                                 <tr class="hover:bg-slate-50">
                                     <td class="p-2.5 font-medium text-slate-500">1</td>
-                                    <td class="p-2.5 font-bold text-slate-900">Tab. Paracetamol 650mg</td>
-                                    <td class="p-2.5 text-indigo-900 font-medium">1 Tablet • 1-0-1 (Twice Daily)</td>
-                                    <td class="p-2.5">3 Days</td>
-                                    <td class="p-2.5 text-slate-600">After Meals</td>
+                                    <td class="p-2.5 font-bold text-slate-900 med-name">Tab. Paracetamol 650mg</td>
+                                    <td class="p-2.5 text-indigo-900 font-medium med-dosage">1 Tablet • 1-0-1 (Twice Daily)</td>
+                                    <td class="p-2.5 med-duration">3 Days</td>
+                                    <td class="p-2.5 text-slate-600 med-instructions">After Meals</td>
                                 </tr>
                                 <tr class="hover:bg-slate-50">
                                     <td class="p-2.5 font-medium text-slate-500">2</td>
-                                    <td class="p-2.5 font-bold text-slate-900">Tab. Pantocid 40mg</td>
-                                    <td class="p-2.5 text-indigo-900 font-medium">1 Tablet • 1-0-0 (Once Daily)</td>
-                                    <td class="p-2.5">5 Days</td>
-                                    <td class="p-2.5 text-slate-600">30 Mins Before Food</td>
+                                    <td class="p-2.5 font-bold text-slate-900 med-name">Tab. Pantocid 40mg</td>
+                                    <td class="p-2.5 text-indigo-900 font-medium med-dosage">1 Tablet • 1-0-0 (Once Daily)</td>
+                                    <td class="p-2.5 med-duration">5 Days</td>
+                                    <td class="p-2.5 text-slate-600 med-instructions">30 Mins Before Food</td>
                                 </tr>
                                 <tr class="hover:bg-slate-50">
                                     <td class="p-2.5 font-medium text-slate-500">3</td>
-                                    <td class="p-2.5 font-bold text-slate-900">Inj. Optineuron & Pantoprazole</td>
-                                    <td class="p-2.5 text-indigo-900 font-medium">1 Ampoule Each • STAT (Immediate)</td>
-                                    <td class="p-2.5">1 Dose</td>
-                                    <td class="p-2.5 text-slate-600">Intramuscular at Clinic</td>
+                                    <td class="p-2.5 font-bold text-slate-900 med-name">Inj. Optineuron & Pantoprazole</td>
+                                    <td class="p-2.5 text-indigo-900 font-medium med-dosage">1 Ampoule Each • STAT (Immediate)</td>
+                                    <td class="p-2.5 med-duration">1 Dose</td>
+                                    <td class="p-2.5 text-slate-600 med-instructions">Intramuscular at Clinic</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -277,6 +276,28 @@ Doctor: Vitals check karwa lo. R50.9 fever aur R51 headache lag raha hai. Parace
 
     </main>
 
+    <!-- Interactive Dosage Modification Modal -->
+    <div id="dosageModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 hidden no-print p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-6 flex flex-col gap-4 border border-slate-200">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="text-base font-bold text-indigo-950 flex items-center gap-2">
+                    <span>💊</span> Verify & Modify Prescription Medications
+                </h3>
+                <button id="closeModalBtn" class="text-slate-400 hover:text-slate-700 font-bold text-lg">✕</button>
+            </div>
+            <p class="text-xs text-slate-500">Review and update medicine names, dosages, durations, or instructions before confirming the final prescription:</p>
+            
+            <div id="modalMedicinesList" class="space-y-3 max-h-80 overflow-y-auto pr-1">
+                <!-- Dynamically injected medicine edit rows -->
+            </div>
+
+            <div class="flex justify-end gap-2 pt-3 border-t">
+                <button id="cancelModalBtn" class="px-4 py-2 text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition">Cancel</button>
+                <button id="saveMedicinesBtn" class="px-5 py-2 text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition shadow-sm">Save & Update Prescription</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Script Logic -->
     <script>
         const patientNameInput = document.getElementById("patientNameInput");
@@ -286,7 +307,15 @@ Doctor: Vitals check karwa lo. R50.9 fever aur R51 headache lag raha hai. Parace
         const prescriptionTimestamp = document.getElementById("prescriptionTimestamp");
         const dialogueInput = document.getElementById("dialogueInput");
         const processBtn = document.getElementById("processBtn");
+        
+        // Modal Elements
         const verifyDosagesBtn = document.getElementById("verifyDosagesBtn");
+        const dosageModal = document.getElementById("dosageModal");
+        const closeModalBtn = document.getElementById("closeModalBtn");
+        const cancelModalBtn = document.getElementById("cancelModalBtn");
+        const saveMedicinesBtn = document.getElementById("saveMedicinesBtn");
+        const modalMedicinesList = document.getElementById("modalMedicinesList");
+        const prescriptionTableBody = document.getElementById("prescriptionTableBody");
 
         patientNameInput.addEventListener("input", () => {
             dispPatientName.innerText = patientNameInput.value.trim() || "Ramesh Kumar";
@@ -298,8 +327,74 @@ Doctor: Vitals check karwa lo. R50.9 fever aur R51 headache lag raha hai. Parace
         const now = new Date();
         prescriptionTimestamp.innerText = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 
+        // Open Dosage Modification Modal
         verifyDosagesBtn.addEventListener("click", () => {
-            alert("✅ All dosages, frequencies, and safety guardrails verified successfully against standard clinical protocols.");
+            modalMedicinesList.innerHTML = "";
+            const rows = prescriptionTableBody.querySelectorAll("tr");
+            
+            rows.forEach((row, index) => {
+                const name = row.querySelector(".med-name").innerText;
+                const dosage = row.querySelector(".med-dosage").innerText;
+                const duration = row.querySelector(".med-duration").innerText;
+                const instructions = row.querySelector(".med-instructions").innerText;
+
+                const div = document.createElement("div");
+                div.className = "bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2 text-xs";
+                div.innerHTML = `
+                    <div class="font-bold text-indigo-950">Medicine #${index + 1}</div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-[10px] font-semibold text-slate-500 mb-0.5">Medicine Name:</label>
+                            <input type="text" value="${name}" class="edit-name w-full p-2 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-semibold text-slate-500 mb-0.5">Dosage & Frequency:</label>
+                            <input type="text" value="${dosage}" class="edit-dosage w-full p-2 bg-white border border-slate-300 rounded-lg text-xs text-indigo-900 font-medium focus:ring-2 focus:ring-indigo-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-semibold text-slate-500 mb-0.5">Duration:</label>
+                            <input type="text" value="${duration}" class="edit-duration w-full p-2 bg-white border border-slate-300 rounded-lg text-xs text-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-semibold text-slate-500 mb-0.5">Instructions:</label>
+                            <input type="text" value="${instructions}" class="edit-instructions w-full p-2 bg-white border border-slate-300 rounded-lg text-xs text-slate-600 focus:ring-2 focus:ring-indigo-500 outline-none">
+                        </div>
+                    </div>
+                `;
+                modalMedicinesList.appendChild(div);
+            });
+
+            dosageModal.classList.remove("hidden");
+        });
+
+        // Close Modal Handlers
+        [closeModalBtn, cancelModalBtn].forEach(btn => {
+            btn.addEventListener("click", () => {
+                dosageModal.classList.add("hidden");
+            });
+        });
+
+        // Save Modified Medicines back to Prescription Table
+        saveMedicinesBtn.addEventListener("click", () => {
+            const editRows = modalMedicinesList.querySelectorAll("div.bg-slate-50");
+            const tableRows = prescriptionTableBody.querySelectorAll("tr");
+
+            editRows.forEach((editRow, index) => {
+                const newName = editRow.querySelector(".edit-name").value;
+                const newDosage = editRow.querySelector(".edit-dosage").value;
+                const newDuration = editRow.querySelector(".edit-duration").value;
+                const newInstructions = editRow.querySelector(".edit-instructions").value;
+
+                if (tableRows[index]) {
+                    tableRows[index].querySelector(".med-name").innerText = newName;
+                    tableRows[index].querySelector(".med-dosage").innerText = newDosage;
+                    tableRows[index].querySelector(".med-duration").innerText = newDuration;
+                    tableRows[index].querySelector(".med-instructions").innerText = newInstructions;
+                }
+            });
+
+            dosageModal.classList.add("hidden");
+            alert("✅ Prescriptions and dosages successfully modified and updated!");
         });
 
         processBtn.addEventListener("click", () => {
