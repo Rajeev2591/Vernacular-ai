@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vernacular AI Scribe & Billing Assistant (UP MVP)</title>
+    <title>NIDAN - Vernacular AI Scribe & Billing Assistant</title>
     <!-- Tailwind CSS CDN for modern UI design -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -13,12 +13,12 @@
     <header class="bg-indigo-700 text-white shadow-md py-4 px-6">
         <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
             <div>
-                <h1 class="text-xl font-bold tracking-wide">🩺 Vernacular AI Scribe & Billing</h1>
+                <h1 class="text-xl font-bold tracking-wide">🩺 NIDAN</h1>
                 <p class="text-xs text-indigo-200">Uttar Pradesh Tier-2/3 Private Clinic Pilot Edition</p>
             </div>
             <div class="flex items-center gap-3">
                 <span class="bg-emerald-500 text-xs px-2.5 py-1 rounded-full font-medium text-white shadow-inner">ABDM Compliant Sandbox</span>
-                <span class="bg-indigo-800 text-xs px-2.5 py-1 rounded-full text-indigo-200 border border-indigo-600">v1.0.6-MVP</span>
+                <span class="bg-indigo-800 text-xs px-2.5 py-1 rounded-full text-indigo-200 border border-indigo-600">v1.1.1-MVP</span>
             </div>
         </div>
     </header>
@@ -58,7 +58,7 @@
             </div>
 
             <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-800">
-                💡 <span class="font-semibold">Pilot Note:</span> Type or edit any dialogue above. The NLP engine dynamically analyzes custom text input.
+                💡 <span class="font-semibold">Pilot Note:</span> Type or edit any dialogue above. NIDAN dynamically analyzes custom Hindi/Awadhi clinical inputs.
             </div>
         </section>
 
@@ -123,7 +123,7 @@
 
     <!-- Footer -->
     <footer class="text-center py-4 text-xs text-slate-400 border-t border-slate-200 mt-auto">
-        Vernacular AI Scribe Initiative • Uttar Pradesh Regional Healthcare Pilot 
+        NIDAN AI • Uttar Pradesh Regional Healthcare Initiative 
     </footer>
 
     <!-- Script Logic -->
@@ -277,7 +277,7 @@
                     resourceType: "Composition",
                     status: "final",
                     category: [{ coding: [{ system: "http://loinc.org", code: "11503-0", display: "Medical records" }] }],
-                    subject: { reference: "Patient/UP-Clinic-Demo" },
+                    subject: { reference: "Patient/NIDAN-Demo" },
                     encounter: { display: "OPD Consultation - Custom Input" },
                     section: [
                         { title: "SOAP Note", text: mockResult },
@@ -329,17 +329,14 @@
                 return;
             }
 
-            // Cancel any ongoing or stuck audio queues
             window.speechSynthesis.cancel();
 
             const utterance = new SpeechSynthesisUtterance(textToSpeak);
 
-            // Fetch latest voices
             if (availableVoices.length === 0) {
                 availableVoices = window.speechSynthesis.getVoices();
             }
 
-            // Try finding an exact Hindi voice, then Indian English, or default
             let selectedVoice = availableVoices.find(v => v.lang.startsWith("hi") || v.lang.includes("hi_IN") || v.lang.includes("hi-IN")) 
                              || availableVoices.find(v => v.lang.startsWith("en-IN") || v.lang.includes("en_IN"))
                              || availableVoices[0];
@@ -351,7 +348,7 @@
                 utterance.lang = "hi-IN";
             }
 
-            utterance.rate = 0.95; // Slightly slower speed for clear medical dialogue
+            utterance.rate = 0.95;
             utterance.pitch = 1.0;
 
             const ttsBtn = document.getElementById("ttsBtn");
@@ -369,7 +366,6 @@
                 ttsBtn.disabled = false;
             };
 
-            // Speak utterance
             window.speechSynthesis.speak(utterance);
         });
     </script>
