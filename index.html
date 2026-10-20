@@ -7,8 +7,12 @@
     <!-- Tailwind CSS CDN for modern UI design -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Print-specific styles for clean PDF export */
+        /* Print-specific styles for clean PDF export without browser headers/footers */
         @media print {
+            @page {
+                margin: 0;
+                size: auto;
+            }
             body * {
                 visibility: hidden;
             }
@@ -228,7 +232,7 @@
     <script>
         const scenarios = {
             "1": "नाम और उम्र क्या है? मेरा नाम सतीश है और मेरी उम्र 25 साल है। क्या तकलीफ है? कल से पेट में बहुत दर्द है और उल्टी हो रही है। अच्छा, खाना खाने के बाद हजम नहीं हो रहा है? जी हाँ, जब भी खाना खा रहा हूँ उल्टी हो जा रही है। ठीक है, डॉक्टर साहब दवाई लिख दीजिए। पेरासिटामोल और क्रोसिन, दिन में तीन बार और सिरप दिन में दो बार, रात को सोने के पहले।",
-            "2": "Doctor: Haan bolo, kya takleef hai?\nPatient: Doctor saab, teen din se bahut tez sar dard hai aur subah se bukhar lag raha है। Pet me bhi halka dard hai.\nDoctor: B.P. 130/85 hai, temperature 101.2 Fahrenheit. Viral fever lag raha hai, dawai likh raha hoon.",
+            "2": "Doctor: Haan bolo, kya takleef hai?\nPatient: Doctor saab, teen din se bahut tez sar dard hai aur subah se bukhar lag raha hai. Pet me bhi halka dard hai.\nDoctor: B.P. 130/85 hai, temperature 101.2 Fahrenheit. Viral fever lag raha hai, dawai likh raha hoon.",
             "3": "Doctor: Kahiye, kya pareshani hai?\nPatient: Saab pichle do din se gale me kharash hai aur khasi aa rahi hai. Saath me halka bukhar bhi hai.\nDoctor: Antihistamine aur cough syrup likh dete hain."
         };
 
