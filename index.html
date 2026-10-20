@@ -190,7 +190,7 @@ Doctor: Vitals check karwa lo. R50.9 fever aur R51 headache lag raha hai. Parace
                         <span class="text-[10px] font-bold text-indigo-900 uppercase tracking-wider">ICD-10 Diagnostic Coding (A)</span>
                         <span class="text-[9px] bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded font-bold tracking-wide">AI SUGGESTED</span>
                     </div>
-                    <div class="space-y-1.5">
+                    <div id="icdCodesContainer" class="space-y-1.5">
                         <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-slate-200">
                             <span class="font-semibold text-slate-800">R50.9 - Fever, Unspecified</span>
                             <span class="text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded">Primary</span>
@@ -287,9 +287,7 @@ Doctor: Vitals check karwa lo. R50.9 fever aur R51 headache lag raha hai. Parace
             </div>
             <p class="text-xs text-slate-500">Review and update medicine names, dosages, durations, or instructions before confirming the final prescription:</p>
             
-            <div id="modalMedicinesList" class="space-y-3 max-h-80 overflow-y-auto pr-1">
-                <!-- Dynamically injected medicine edit rows -->
-            </div>
+            <div id="modalMedicinesList" class="space-y-3 max-h-80 overflow-y-auto pr-1"></div>
 
             <div class="flex justify-end gap-2 pt-3 border-t">
                 <button id="cancelModalBtn" class="px-4 py-2 text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition">Cancel</button>
@@ -307,7 +305,10 @@ Doctor: Vitals check karwa lo. R50.9 fever aur R51 headache lag raha hai. Parace
         const prescriptionTimestamp = document.getElementById("prescriptionTimestamp");
         const dialogueInput = document.getElementById("dialogueInput");
         const processBtn = document.getElementById("processBtn");
-        
+        const outChief = document.getElementById("outChief");
+        const icdCodesContainer = document.getElementById("icdCodesContainer");
+        const prescriptionTableBody = document.getElementById("prescriptionTableBody");
+
         // Modal Elements
         const verifyDosagesBtn = document.getElementById("verifyDosagesBtn");
         const dosageModal = document.getElementById("dosageModal");
@@ -315,10 +316,9 @@ Doctor: Vitals check karwa lo. R50.9 fever aur R51 headache lag raha hai. Parace
         const cancelModalBtn = document.getElementById("cancelModalBtn");
         const saveMedicinesBtn = document.getElementById("saveMedicinesBtn");
         const modalMedicinesList = document.getElementById("modalMedicinesList");
-        const prescriptionTableBody = document.getElementById("prescriptionTableBody");
 
         patientNameInput.addEventListener("input", () => {
-            dispPatientName.innerText = patientNameInput.value.trim() || "Ramesh Kumar";
+            dispPatientName.innerText = patientNameInput.value.trim() || "Patient";
         });
         patientAbhaInput.addEventListener("input", () => {
             dispAbhaId.innerText = patientAbhaInput.value.trim() || "--";
@@ -326,6 +326,86 @@ Doctor: Vitals check karwa lo. R50.9 fever aur R51 headache lag raha hai. Parace
 
         const now = new Date();
         prescriptionTimestamp.innerText = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+
+        // Dynamic AI Parser Engine based on Transcript content
+        processBtn.addEventListener("click", () => {
+            const text = dialogueInput.value.toLowerCase();
+            processBtn.innerHTML = "⏳ Parsing Clinical Note & ICD-10...";
+
+            setTimeout(() => {
+                let chief = "Acute consultation for reported symptoms.";
+                let icdHTML = "";
+                let meds = [];
+
+                if (text.includes("bukhar") || text.includes("fever") || text.includes("sar dard") || text.includes("headache")) {
+                    chief = "Acute Febrile Illness, High Grade Fever, Severe Headache & Body Ache.";
+                    icdHTML = `
+                        <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-slate-200">
+                            <span class="font-semibold text-slate-800">R50.9 - Fever, Unspecified</span>
+                            <span class="text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded">Primary</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-slate-200">
+                            <span class="font-semibold text-slate-800">R51 - Headache</span>
+                            <span class="text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded">Secondary</span>
+                        </div>
+                    `;
+                    meds = [
+                        { name: "Tab. Paracetamol 650mg", dosage: "1 Tablet • 1-0-1 (Twice Daily)", duration: "3 Days", inst: "After Meals" },
+                        { name: "Tab. Pantocid 40mg", dosage: "1 Tablet • 1-0-0 (Once Daily)", duration: "5 Days", inst: "30 Mins Before Food" },
+                        { name: "Inj. Optineuron & Pantoprazole", dosage: "1 Ampoule Each • STAT", duration: "1 Dose", inst: "Intramuscular at Clinic" }
+                    ];
+                } else if (text.includes("pet") || text.includes("dard") || text.includes("vomiting") || text.includes("ulti")) {
+                    chief = "Acute Gastritis, Severe Abdominal Pain & Post-Prandial Vomiting.";
+                    icdHTML = `
+                        <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-slate-200">
+                            <span class="font-semibold text-slate-800">K30 - Functional Dyspepsia</span>
+                            <span class="text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded">Primary</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-slate-200">
+                            <span class="font-semibold text-slate-800">R11.1 - Vomiting, Unspecified</span>
+                            <span class="text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded">Secondary</span>
+                        </div>
+                    `;
+                    meds = [
+                        { name: "Tab. Pantoprazole 40mg", dosage: "1 Tablet • 1-0-0 (Once Daily)", duration: "5 Days", inst: "Before Breakfast" },
+                        { name: "Tab. Ondansetron 4mg", dosage: "1 Tablet • As Needed (SOS)", duration: "3 Days", inst: "For Nausea / Vomiting" },
+                        { name: "Syp. Antacid Gel", dosage: "10ml • 1-1-1 (Three Times)", duration: "3 Days", inst: "After Meals" }
+                    ];
+                } else {
+                    chief = "General medical checkup and consultation for reported discomfort.";
+                    icdHTML = `
+                        <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-slate-200">
+                            <span class="font-semibold text-slate-800">Z00.0 - General Adult Medical Examination</span>
+                            <span class="text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded">Primary</span>
+                        </div>
+                    `;
+                    meds = [
+                        { name: "Tab. Multivitamin Complex", dosage: "1 Tablet • 0-1-0 (Once Daily)", duration: "10 Days", inst: "After Food" }
+                    ];
+                }
+
+                // Update DOM elements dynamically
+                outChief.innerText = chief;
+                icdCodesContainer.innerHTML = icdHTML;
+
+                prescriptionTableBody.innerHTML = "";
+                meds.forEach((m, idx) => {
+                    const tr = document.createElement("tr");
+                    tr.className = "hover:bg-slate-50";
+                    tr.innerHTML = `
+                        <td class="p-2.5 font-medium text-slate-500">${idx + 1}</td>
+                        <td class="p-2.5 font-bold text-slate-900 med-name">${m.name}</td>
+                        <td class="p-2.5 text-indigo-900 font-medium med-dosage">${m.dosage}</td>
+                        <td class="p-2.5 med-duration">${m.duration}</td>
+                        <td class="p-2.5 text-slate-600 med-instructions">${m.inst}</td>
+                    `;
+                    prescriptionTableBody.appendChild(tr);
+                });
+
+                processBtn.innerHTML = "⚡ Extract Clinical Note & Auto-Suggest ICD-10";
+                alert("✨ Prescription successfully updated based on transcript symptoms!");
+            }, 500);
+        });
 
         // Open Dosage Modification Modal
         verifyDosagesBtn.addEventListener("click", () => {
@@ -345,19 +425,19 @@ Doctor: Vitals check karwa lo. R50.9 fever aur R51 headache lag raha hai. Parace
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         <div>
                             <label class="block text-[10px] font-semibold text-slate-500 mb-0.5">Medicine Name:</label>
-                            <input type="text" value="${name}" class="edit-name w-full p-2 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none">
+                            <input type="text" value="${name}" class="edit-name w-full p-2 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-900 outline-none">
                         </div>
                         <div>
                             <label class="block text-[10px] font-semibold text-slate-500 mb-0.5">Dosage & Frequency:</label>
-                            <input type="text" value="${dosage}" class="edit-dosage w-full p-2 bg-white border border-slate-300 rounded-lg text-xs text-indigo-900 font-medium focus:ring-2 focus:ring-indigo-500 outline-none">
+                            <input type="text" value="${dosage}" class="edit-dosage w-full p-2 bg-white border border-slate-300 rounded-lg text-xs text-indigo-900 font-medium outline-none">
                         </div>
                         <div>
                             <label class="block text-[10px] font-semibold text-slate-500 mb-0.5">Duration:</label>
-                            <input type="text" value="${duration}" class="edit-duration w-full p-2 bg-white border border-slate-300 rounded-lg text-xs text-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none">
+                            <input type="text" value="${duration}" class="edit-duration w-full p-2 bg-white border border-slate-300 rounded-lg text-xs text-slate-700 outline-none">
                         </div>
                         <div>
                             <label class="block text-[10px] font-semibold text-slate-500 mb-0.5">Instructions:</label>
-                            <input type="text" value="${instructions}" class="edit-instructions w-full p-2 bg-white border border-slate-300 rounded-lg text-xs text-slate-600 focus:ring-2 focus:ring-indigo-500 outline-none">
+                            <input type="text" value="${instructions}" class="edit-instructions w-full p-2 bg-white border border-slate-300 rounded-lg text-xs text-slate-600 outline-none">
                         </div>
                     </div>
                 `;
@@ -367,14 +447,10 @@ Doctor: Vitals check karwa lo. R50.9 fever aur R51 headache lag raha hai. Parace
             dosageModal.classList.remove("hidden");
         });
 
-        // Close Modal Handlers
         [closeModalBtn, cancelModalBtn].forEach(btn => {
-            btn.addEventListener("click", () => {
-                dosageModal.classList.add("hidden");
-            });
+            btn.addEventListener("click", () => { dosageModal.classList.add("hidden"); });
         });
 
-        // Save Modified Medicines back to Prescription Table
         saveMedicinesBtn.addEventListener("click", () => {
             const editRows = modalMedicinesList.querySelectorAll("div.bg-slate-50");
             const tableRows = prescriptionTableBody.querySelectorAll("tr");
@@ -394,19 +470,7 @@ Doctor: Vitals check karwa lo. R50.9 fever aur R51 headache lag raha hai. Parace
             });
 
             dosageModal.classList.add("hidden");
-            alert("✅ Prescriptions and dosages successfully modified and updated!");
-        });
-
-        processBtn.addEventListener("click", () => {
-            if (!dialogueInput.value.trim()) {
-                alert("Please enter consultation dialogue.");
-                return;
-            }
-            processBtn.innerHTML = "⏳ Processing Scribe & ICD-10...";
-            setTimeout(() => {
-                processBtn.innerHTML = "⚡ Extract Clinical Note & Auto-Suggest ICD-10";
-                alert("Clinical note successfully parsed and synced with ABDM health records!");
-            }, 500);
+            alert("✅ Prescriptions and dosages successfully modified!");
         });
 
         // --- Web Speech API Recording Implementation ---
@@ -443,7 +507,6 @@ Doctor: Vitals check karwa lo. R50.9 fever aur R51 headache lag raha hai. Parace
             };
 
             recognition.onerror = (event) => {
-                console.error("Speech recognition error", event.error);
                 stopListeningState();
             };
 
