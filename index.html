@@ -1,1 +1,120 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vernacular AI Scribe & Billing Assistant (UP MVP)</title>
+    <!-- Tailwind CSS CDN for modern UI design -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-indigo-700 text-white shadow-md py-4 px-6">
+        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
+            <div>
+                <h1 class="text-xl font-bold tracking-wide">🩺 Vernacular AI Scribe & Billing</h1>
+                <p class="text-xs text-indigo-200">Uttar Pradesh Tier-2/3 Private Clinic Pilot Edition</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="bg-emerald-500 text-xs px-2.5 py-1 rounded-full font-medium text-white shadow-inner">ABDM Compliant Sandbox</span>
+                <span class="bg-indigo-800 text-xs px-2.5 py-1 rounded-full text-indigo-200 border border-indigo-600">v1.0.4-MVP</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-6xl mx-auto p-4 sm:p-6 flex-grow grid grid-cols-1 lg:grid-cols-12 gap-6 w-full">
+        
+        <!-- Left Column: Input & Simulation Controls (5 Cols) -->
+        <section class="lg:col-span-5 bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col gap-4">
+            <h2 class="text-lg font-semibold text-slate-900 border-b pb-2 flex items-center justify-between">
+                <span>🎙️ Consultation Input</span>
+                <span class="text-xs text-slate-500 font-normal">Hindi / Awadhi Audio Simulation</span>
+            </h2>
+
+            <div>
+                <label class="block text-xs font-medium text-slate-600 mb-1">Select Preset UP Clinical Scenario:</label>
+                <select id="scenarioSelect" class="w-full p-2.5 text-sm bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    <option value="1">Fever & Body Ache (Viral Pyrexia)</option>
+                    <option value="2">Cough, Cold & Mild Chest Discomfort (URTI)</option>
+                    <option value="3">Abdominal Pain & Gastric Issues (Dyspepsia)</option>
+                </select>
+            </div>
+
+            <div class="flex-grow flex flex-col">
+                <label class="block text-xs font-medium text-slate-600 mb-1">Doctor-Patient Spoken Dialogue (Editable):</label>
+                <textarea id="dialogueInput" rows="7" class="w-full p-3 text-sm bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none font-mono text-xs leading-relaxed" placeholder="Enter or select consultation transcript..."></textarea>
+            </div>
+
+            <div class="flex gap-3 pt-2">
+                <button id="processBtn" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 px-4 rounded-lg text-sm transition shadow flex items-center justify-center gap-2">
+                    <span>⚡ Generate Medical Scribe Note</span>
+                </button>
+                <button id="ttsBtn" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-2.5 px-3 rounded-lg text-sm border border-slate-300 transition" title="Listen Audio">
+                    🔊 Listen
+                </button>
+            </div>
+
+            <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-800">
+                💡 <span class="font-semibold">Pilot Note:</span> Transcribes regional dialects and maps clinical terms automatically to ABDM-compliant ICD-10 codes.
+            </div>
+        </section>
+
+        <!-- Right Column: Structured Output & EHR JSON (7 Cols) -->
+        <section class="lg:col-span-7 bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col gap-4">
+            <h2 class="text-lg font-semibold text-slate-900 border-b pb-2 flex items-center justify-between">
+                <span>📋 Structured Clinical Output</span>
+                <div class="flex gap-2">
+                    <button id="copyJsonBtn" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1 rounded border border-slate-300 transition">Copy FHIR JSON</button>
+                    <button id="exportBtn" class="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-2.5 py-1 rounded border border-indigo-200 font-medium transition">Export PDF Note</button>
+                </div>
+            </h2>
+
+            <!-- Output Tabs -->
+            <div class="flex border-b border-slate-200 text-sm">
+                <button id="tabSoap" class="px-4 py-2 font-medium text-indigo-600 border-b-2 border-indigo-600 focus:outline-none">SOAP Summary</button>
+                <button id="tabIcd" class="px-4 py-2 font-medium text-slate-500 hover:text-slate-800 focus:outline-none">ICD-10 & Billing</button>
+                <button id="tabJson" class="px-4 py-2 font-medium text-slate-500 hover:text-slate-800 focus:outline-none">ABDM FHIR Payload</button>
+            </div>
+
+            <!-- Tab Content 1: SOAP Note -->
+            <div id="contentSoap" class="space-y-3 text-sm flex-grow overflow-y-auto max-h-[420px] pr-1">
+                <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                    <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider block mb-1">Chief Complaint</span>
+                    <p id="outChief" class="text-slate-700 italic">Generate to view...</p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                        <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider block mb-1">Subjective (S)</span>
+                        <p id="outSubjective" class="text-slate-700 text-xs">...</p>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                        <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider block mb-1">Objective Vitals (O)</span>
+                        <p id="outObjective" class="text-slate-700 text-xs">...</p>
+                    </div>
+                </div>
+                <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                    <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider block mb-1">Assessment & Diagnosis (A)</span>
+                    <p id="outAssessment" class="text-slate-700 text-xs">...</p>
+                </div>
+                <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                    <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider block mb-1">Treatment Plan & Rx (P)</span>
+                    <p id="outPlan" class="text-slate-700 text-xs">...</p>
+                </div>
+            </div>
+
+            <!-- Tab Content 2: ICD-10 Codes -->
+            <div id="contentIcd" class="space-y-2 text-sm flex-grow overflow-y-auto max-h-[420px] hidden">
+                <p class="text-xs text-slate-500 mb-2">Automatically matched diagnostic codes for clinic reimbursement & ABDM reporting:</p>
+                <div id="icdListContainer" class="space-y-2">
+                    <!-- Dynamic List -->
+                </div>
+            </div>
+
+            <!-- Tab Content 3: JSON Payload -->
+            <div id="contentJson" class="flex-grow flex flex-col hidden">
+                <pre id="jsonOutput" class="bg-slate-900 text-emerald-400 p-3 rounded-lg text-xs font-mono overflow-x-auto flex-grow max-h-[400px]">Click 'Generate Medical Scribe Note' to view FHIR payload...</pre>
+            </div>
+        </section
