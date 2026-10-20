@@ -323,7 +323,7 @@
                 const lowerText = rawText.toLowerCase();
                 let mockResult = {
                     chief_complaint: "General health screening & examination.",
-                    subjective: "Patient reports general malaise: \"" + rawText.slice(0, 80) + "...\"",
+                    subjective: "Patient reports: \"" + rawText + "\"",
                     objective: "General physical condition stable. Vitals within normal limits.",
                     assessment: "General Medical Evaluation",
                     plan: "1. Multivitamin supplementation OD\n2. Adequate oral fluid intake\n3. Return if symptoms worsen.",
@@ -332,10 +332,22 @@
                     ]
                 };
 
-                if (lowerText.includes("bukhar") || lowerText.includes("fever") || lowerText.includes("sar dard") || lowerText.includes("headache") || lowerText.includes("paracetamol")) {
+                if (lowerText.includes("injection") || lowerText.includes("inj") || lowerText.includes("lagwa")) {
+                    mockResult = {
+                        chief_complaint: "Acute pain / Injection therapy prescribed.",
+                        subjective: "Patient consultation note: \"" + rawText + "\"",
+                        objective: "Vitals stable. Localized pain assessed.",
+                        assessment: "Acute Pain / Symptomatic Indication for Injection",
+                        plan: "Rx:\n1. Injection prescribed as discussed — Administer IM/IV via trained nursing staff.\n2. Tab. Paracetamol 650mg SOS for pain/fever.\n3. Review after 24 hours.",
+                        icd_10_codes: [
+                            {"code": "R52", "description": "Pain, unspecified"},
+                            {"code": "Z51.8", "description": "Encounter for other specified aftercare"}
+                        ]
+                    };
+                } else if (lowerText.includes("bukhar") || lowerText.includes("fever") || lowerText.includes("sar dard") || lowerText.includes("headache") || lowerText.includes("paracetamol")) {
                     mockResult = {
                         chief_complaint: "Acute pyrexia accompanied by generalized headache and fatigue.",
-                        subjective: "Patient presents with symptoms of high body temperature, frontal headache, and associated discomfort.",
+                        subjective: "Patient presents with symptoms of high body temperature, frontal headache, and associated discomfort: \"" + rawText + "\"",
                         objective: "Temperature: 101.2°F, Blood Pressure: 130/85 mmHg, Pulse: 84 bpm. Conscious and oriented.",
                         assessment: "Acute Febrile Illness / Viral Pyrexia",
                         plan: "Rx:\n1. Tab. Paracetamol 650mg — 1 tab three times a day (TDS) post meals for 3 days.\n2. Tab. Pantoprazole 40mg — 1 tab once daily empty stomach in morning.\n3. Adequate hydration & bed rest advised.",
@@ -347,7 +359,7 @@
                 } else if (lowerText.includes("khasi") || lowerText.includes("cough") || lowerText.includes("gale") || lowerText.includes("throat")) {
                     mockResult = {
                         chief_complaint: "Pharyngeal irritation and persistent nocturnal dry cough.",
-                        subjective: "Patient complains of sore throat and dry cough worsening during nighttime.",
+                        subjective: "Patient complains of sore throat and dry cough: \"" + rawText + "\"",
                         objective: "Pharynx congested. Bilateral lung fields clear to auscultation.",
                         assessment: "Acute Upper Respiratory Tract Infection (URTI)",
                         plan: "Rx:\n1. Antitussive Cough Syrup — 10ml twice daily (BD) for 5 days.\n2. Tab. Levocetirizine 5mg — 1 tab at bedtime for 3 days.\n3. Warm saline water gargles thrice daily.",
@@ -359,7 +371,7 @@
                 } else if (lowerText.includes("pet") || lowerText.includes("jalan") || lowerText.includes("acid") || lowerText.includes("stomach") || lowerText.includes("kam")) {
                     mockResult = {
                         chief_complaint: "Epigastric burning sensation and frequent acid regurgitation.",
-                        subjective: "Patient reports upper abdominal burning post meals and general gastric distress.",
+                        subjective: "Patient reports upper abdominal burning post meals: \"" + rawText + "\"",
                         objective: "Abdomen soft, non-tender on palpation. Normal bowel sounds present.",
                         assessment: "Gastroesophageal Reflux Disease (GERD) / Dyspepsia",
                         plan: "Rx:\n1. Cap. Pantoprazole 40mg — 1 cap once daily before breakfast.\n2. Antacid Gel (Sucralfate base) — 10ml three times daily post meals.\n3. Avoid spicy, oily, and fried food items.",
@@ -409,7 +421,7 @@
         // Trigger initial load on startup
         processBtn.click();
 
-        // --- Live Web Speech API Recording Implementation ---
+        // --- Continuous Live Web Speech API Recording Implementation ---
         const recordMicBtn = document.getElementById("recordMicBtn");
         const micIcon = document.getElementById("micIcon");
         const micBtnText = document.getElementById("micBtnText");
@@ -435,11 +447,11 @@
             };
 
             recognition.onresult = (event) => {
-                let transcript = "";
-                for (let i = event.resultIndex; i < event.results.length; i++) {
-                    transcript += event.results[i][0].transcript;
+                let currentTranscript = "";
+                for (let i = 0; i < event.results.length; ++i) {
+                    currentTranscript += event.results[i][0].transcript + " ";
                 }
-                dialogueInput.value = "Consultation Transcript: " + transcript;
+                dialogueInput.value = currentTranscript.trim();
                 scenarioSelect.value = "custom";
             };
 
@@ -450,7 +462,9 @@
 
             recognition.onend = () => {
                 stopListeningState();
-                processBtn.click();
+                if (dialogueInput.value.trim().length > 0) {
+                    processBtn.click();
+                }
             };
         }
 
@@ -474,7 +488,6 @@
             } else {
                 try {
                     scenarioSelect.value = "custom";
-                    dialogueInput.value = "Listening to consultation conversation...";
                     recognition.start();
                 } catch (err) {
                     console.error(err);
@@ -492,7 +505,7 @@
             alert("FHIR JSON payload copied to clipboard!");
         });
 
-        // --- Robust Text-To-Speech Implementation ---
+        // --- Toggleable Text-To-Speech Implementation (Play / Stop) ---
         let availableVoices = [];
 
         function loadVoices() {
@@ -506,19 +519,27 @@
             window.speechSynthesis.onvoiceschanged = loadVoices;
         }
 
-        document.getElementById("ttsBtn").addEventListener("click", () => {
-            const textToSpeak = dialogueInput.value.trim();
-            if (!textToSpeak) {
-                alert("Please enter text to listen.");
-                return;
-            }
+        const ttsBtn = document.getElementById("ttsBtn");
 
+        ttsBtn.addEventListener("click", () => {
             if (!('speechSynthesis' in window)) {
                 alert("Text-to-speech is not supported on this browser.");
                 return;
             }
 
-            window.speechSynthesis.cancel();
+            // If audio is currently speaking, clicking it again will stop it immediately
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+                ttsBtn.innerHTML = "🔊 Listen";
+                ttsBtn.disabled = false;
+                return;
+            }
+
+            const textToSpeak = dialogueInput.value.trim();
+            if (!textToSpeak) {
+                alert("Please enter text to listen.");
+                return;
+            }
 
             const utterance = new SpeechSynthesisUtterance(textToSpeak);
 
@@ -538,20 +559,15 @@
             utterance.rate = 0.95;
             utterance.pitch = 1.0;
 
-            const ttsBtn = document.getElementById("ttsBtn");
-            const originalText = ttsBtn.innerHTML;
-            ttsBtn.innerHTML = "🔊 Playing...";
-            ttsBtn.disabled = true;
+            ttsBtn.innerHTML = "⏹️ Stop Audio";
 
             utterance.onend = () => {
-                ttsBtn.innerHTML = originalText;
-                ttsBtn.disabled = false;
+                ttsBtn.innerHTML = "🔊 Listen";
             };
 
             utterance.onerror = (e) => {
                 console.error("TTS Error:", e);
-                ttsBtn.innerHTML = originalText;
-                ttsBtn.disabled = false;
+                ttsBtn.innerHTML = "🔊 Listen";
             };
 
             window.speechSynthesis.speak(utterance);
