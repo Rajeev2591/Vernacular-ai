@@ -18,7 +18,7 @@
             </div>
             <div class="flex items-center gap-3">
                 <span class="bg-emerald-500 text-xs px-2.5 py-1 rounded-full font-medium text-white shadow-inner">ABDM Compliant Sandbox</span>
-                <span class="bg-indigo-800 text-xs px-2.5 py-1 rounded-full text-indigo-200 border border-indigo-600">v1.0.5-MVP</span>
+                <span class="bg-indigo-800 text-xs px-2.5 py-1 rounded-full text-indigo-200 border border-indigo-600">v1.0.6-MVP</span>
             </div>
         </div>
     </header>
@@ -303,12 +303,73 @@
             alert("FHIR JSON payload copied to clipboard!");
         });
 
-        // Text-To-Speech function
+        // --- Robust Mobile-Optimized Text-To-Speech Implementation ---
+        let availableVoices = [];
+
+        function loadVoices() {
+            if ('speechSynthesis' in window) {
+                availableVoices = window.speechSynthesis.getVoices();
+            }
+        }
+
+        if ('speechSynthesis' in window) {
+            loadVoices();
+            window.speechSynthesis.onvoiceschanged = loadVoices;
+        }
+
         document.getElementById("ttsBtn").addEventListener("click", () => {
-            const textToSpeak = dialogueInput.value;
-            if (!textToSpeak) return;
+            const textToSpeak = dialogueInput.value.trim();
+            if (!textToSpeak) {
+                alert("Please enter text to listen.");
+                return;
+            }
+
+            if (!('speechSynthesis' in window)) {
+                alert("Text-to-speech is not supported on this browser.");
+                return;
+            }
+
+            // Cancel any ongoing or stuck audio queues
+            window.speechSynthesis.cancel();
+
             const utterance = new SpeechSynthesisUtterance(textToSpeak);
-            utterance.lang = "hi-IN";
+
+            // Fetch latest voices
+            if (availableVoices.length === 0) {
+                availableVoices = window.speechSynthesis.getVoices();
+            }
+
+            // Try finding an exact Hindi voice, then Indian English, or default
+            let selectedVoice = availableVoices.find(v => v.lang.startsWith("hi") || v.lang.includes("hi_IN") || v.lang.includes("hi-IN")) 
+                             || availableVoices.find(v => v.lang.startsWith("en-IN") || v.lang.includes("en_IN"))
+                             || availableVoices[0];
+
+            if (selectedVoice) {
+                utterance.voice = selectedVoice;
+                utterance.lang = selectedVoice.lang;
+            } else {
+                utterance.lang = "hi-IN";
+            }
+
+            utterance.rate = 0.95; // Slightly slower speed for clear medical dialogue
+            utterance.pitch = 1.0;
+
+            const ttsBtn = document.getElementById("ttsBtn");
+            ttsBtn.innerText = "🔊 Playing...";
+            ttsBtn.disabled = true;
+
+            utterance.onend = () => {
+                ttsBtn.innerText = "🔊 Listen";
+                ttsBtn.disabled = false;
+            };
+
+            utterance.onerror = (e) => {
+                console.error("TTS Error:", e);
+                ttsBtn.innerText = "🔊 Listen";
+                ttsBtn.disabled = false;
+            };
+
+            // Speak utterance
             window.speechSynthesis.speak(utterance);
         });
     </script>
