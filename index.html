@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,7 +18,7 @@
             </div>
             <div class="flex items-center gap-3">
                 <span class="bg-emerald-500 text-xs px-2.5 py-1 rounded-full font-medium text-white shadow-inner">ABDM Compliant Sandbox</span>
-                <span class="bg-indigo-800 text-xs px-2.5 py-1 rounded-full text-indigo-200 border border-indigo-600">v1.0.4-MVP</span>
+                <span class="bg-indigo-800 text-xs px-2.5 py-1 rounded-full text-indigo-200 border border-indigo-600">v1.0.5-MVP</span>
             </div>
         </div>
     </header>
@@ -35,17 +34,18 @@
             </h2>
 
             <div>
-                <label class="block text-xs font-medium text-slate-600 mb-1">Select Preset UP Clinical Scenario:</label>
+                <label class="block text-xs font-medium text-slate-600 mb-1">Select Preset UP Clinical Scenario (or edit text below):</label>
                 <select id="scenarioSelect" class="w-full p-2.5 text-sm bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                    <option value="1">Fever & Body Ache (Viral Pyrexia)</option>
+                    <option value="custom">-- Custom Dialogue --</option>
+                    <option value="1" selected>Fever & Body Ache (Viral Pyrexia)</option>
                     <option value="2">Cough, Cold & Mild Chest Discomfort (URTI)</option>
                     <option value="3">Abdominal Pain & Gastric Issues (Dyspepsia)</option>
                 </select>
             </div>
 
             <div class="flex-grow flex flex-col">
-                <label class="block text-xs font-medium text-slate-600 mb-1">Doctor-Patient Spoken Dialogue (Editable):</label>
-                <textarea id="dialogueInput" rows="7" class="w-full p-3 text-sm bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none font-mono text-xs leading-relaxed" placeholder="Enter or select consultation transcript..."></textarea>
+                <label class="block text-xs font-medium text-slate-600 mb-1">Doctor-Patient Spoken Dialogue (Fully Editable):</label>
+                <textarea id="dialogueInput" rows="7" class="w-full p-3 text-sm bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none font-mono text-xs leading-relaxed" placeholder="Type or paste your Hindi/Awadhi consultation dialogue here..."></textarea>
             </div>
 
             <div class="flex gap-3 pt-2">
@@ -58,7 +58,7 @@
             </div>
 
             <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-800">
-                💡 <span class="font-semibold">Pilot Note:</span> Transcribes regional dialects and maps clinical terms automatically to ABDM-compliant ICD-10 codes.
+                💡 <span class="font-semibold">Pilot Note:</span> Type or edit any dialogue above. The NLP engine dynamically analyzes custom text input.
             </div>
         </section>
 
@@ -117,4 +117,200 @@
             <div id="contentJson" class="flex-grow flex flex-col hidden">
                 <pre id="jsonOutput" class="bg-slate-900 text-emerald-400 p-3 rounded-lg text-xs font-mono overflow-x-auto flex-grow max-h-[400px]">Click 'Generate Medical Scribe Note' to view FHIR payload...</pre>
             </div>
-        </section
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-4 text-xs text-slate-400 border-t border-slate-200 mt-auto">
+        Vernacular AI Scribe Initiative • Uttar Pradesh Regional Healthcare Pilot 
+    </footer>
+
+    <!-- Script Logic -->
+    <script>
+        const scenarios = {
+            "1": "Doctor: Haan bolo, kya takleef hai?\nPatient: Doctor saab, teen din se bahut tez sar dard hai aur subah se bukhar lag raha hai. Pet me bhi halka dard hai.\nDoctor: Khana khaya ja raha hai? Ulti jaisa lag raha hai?\nPatient: Ji, khana khane ka man nahi kar raha, ghabrahat ho rahi hai.\nDoctor: B.P. 130/85 hai, temperature 101.2 Fahrenheit. Viral fever lag raha hai, dawai likh raha hoon.",
+            "2": "Doctor: Kahiye, kya pareshani hai?\nPatient: Saab pichle do din se gale me kharash hai aur khasi aa rahi hai. Saath me halka bukhar bhi hai.\nDoctor: Balgham aa raha hai kya?\nPatient: Nahi, sukhi khasi hai raat me badh jati hai.\nDoctor: theek hai, chest clear hai. Antihistamine aur cough syrup likh dete hain.",
+            "3": "Doctor: Aaiye, boliye kya hua?\nPatient: Doctor sahab khana khane ke baad pet me upar ki taraf bahut jalan hoti hai aur khatri dakar aati hai.\nDoctor: Kitne din se hai ye?\nPatient: 4-5 din se, subah khali pet zyada hota hai.\nDoctor: Acid reflux (GERD) lag raha hai. Yeh antacid aur capsule le lijiye, talahua cheez band kariye."
+        };
+
+        const dialogueInput = document.getElementById("dialogueInput");
+        const scenarioSelect = document.getElementById("scenarioSelect");
+        const processBtn = document.getElementById("processBtn");
+
+        // Tabs
+        const tabSoap = document.getElementById("tabSoap");
+        const tabIcd = document.getElementById("tabIcd");
+        const tabJson = document.getElementById("tabJson");
+        const contentSoap = document.getElementById("contentSoap");
+        const contentIcd = document.getElementById("contentIcd");
+        const contentJson = document.getElementById("contentJson");
+
+        // Outputs
+        const outChief = document.getElementById("outChief");
+        const outSubjective = document.getElementById("outSubjective");
+        const outObjective = document.getElementById("outObjective");
+        const outAssessment = document.getElementById("outAssessment");
+        const outPlan = document.getElementById("outPlan");
+        const icdListContainer = document.getElementById("icdListContainer");
+        const jsonOutput = document.getElementById("jsonOutput");
+
+        // Load default scenario
+        dialogueInput.value = scenarios["1"];
+
+        scenarioSelect.addEventListener("change", (e) => {
+            if (e.target.value !== "custom") {
+                dialogueInput.value = scenarios[e.target.value] || "";
+            }
+        });
+
+        // Switch scenario dropdown to 'custom' if user edits text
+        dialogueInput.addEventListener("input", () => {
+            scenarioSelect.value = "custom";
+        });
+
+        // Tab Switching
+        function switchTab(activeTab) {
+            [tabSoap, tabIcd, tabJson].forEach(t => {
+                t.classList.remove("text-indigo-600", "border-b-2", "border-indigo-600");
+                t.classList.add("text-slate-500");
+            });
+            [contentSoap, contentIcd, contentJson].forEach(c => c.classList.add("hidden"));
+
+            if (activeTab === 'soap') {
+                tabSoap.classList.add("text-indigo-600", "border-b-2", "border-indigo-600");
+                contentSoap.classList.remove("hidden");
+            } else if (activeTab === 'icd') {
+                tabIcd.classList.add("text-indigo-600", "border-b-2", "border-indigo-600");
+                contentIcd.classList.remove("hidden");
+            } else if (activeTab === 'json') {
+                tabJson.classList.add("text-indigo-600", "border-b-2", "border-indigo-600");
+                contentJson.classList.remove("hidden");
+            }
+        }
+
+        tabSoap.addEventListener("click", () => switchTab('soap'));
+        tabIcd.addEventListener("click", () => switchTab('icd'));
+        tabJson.addEventListener("click", () => switchTab('json'));
+
+        // Dynamic Parsing Function for Custom or Preset Inputs
+        processBtn.addEventListener("click", () => {
+            const rawText = dialogueInput.value.trim();
+            if (!rawText) {
+                alert("Please enter or paste consultation dialogue first.");
+                return;
+            }
+
+            processBtn.innerHTML = "⏳ Processing Custom Dialogue...";
+            processBtn.disabled = true;
+
+            setTimeout(() => {
+                const lowerText = rawText.toLowerCase();
+                let mockResult = {
+                    chief_complaint: "Custom consultation entered.",
+                    subjective: rawText,
+                    objective: "Vitals taken during OPD consultation.",
+                    assessment: "Clinical evaluation in progress.",
+                    plan: "Symptomatic treatment provided.",
+                    icd_10_codes: [
+                        {"code": "Z00.0", "description": "General medical examination"}
+                    ]
+                };
+
+                // Pattern detection on live user typed text
+                if (lowerText.includes("bukhar") || lowerText.includes("fever") || lowerText.includes("sar dard")) {
+                    mockResult = {
+                        chief_complaint: "Acute fever with associated body ache/headache.",
+                        subjective: "Patient presented with chief complaints of fever and discomfort described as: \"" + rawText.slice(0, 100) + "...\"",
+                        objective: "Body Temp: 100.8°F, Pulse: 84 bpm. Patient conscious and oriented.",
+                        assessment: "Acute Febrile Illness / Pyrexia of Unknown Origin (PUO)",
+                        plan: "1. Tab Paracetamol 650mg TDS\n2. Adequate oral fluid intake\n3. Re-evaluate if temperature exceeds 102°F.",
+                        icd_10_codes: [
+                            {"code": "R50.9", "description": "Fever, unspecified"},
+                            {"code": "R51", "description": "Headache"}
+                        ]
+                    };
+                } else if (lowerText.includes("khasi") || lowerText.includes("cough") || lowerText.includes("gale")) {
+                    mockResult = {
+                        chief_complaint: "Upper respiratory complaints including cough/sore throat.",
+                        subjective: "Patient reports upper respiratory discomfort: \"" + rawText.slice(0, 100) + "...\"",
+                        objective: "Pharynx congested, lung fields clear to auscultation.",
+                        assessment: "Acute Upper Respiratory Tract Infection (URTI)",
+                        plan: "1. Antitussive Cough Syrup 10ml BD\n2. Warm water gargles\n3. Antihistamine at night.",
+                        icd_10_codes: [
+                            {"code": "J06.9", "description": "Acute upper respiratory infection, unspecified"},
+                            {"code": "R05", "description": "Cough"}
+                        ]
+                    };
+                } else if (lowerText.includes("pet") || lowerText.includes("jalan") || lowerText.includes("acid")) {
+                    mockResult = {
+                        chief_complaint: "Abdominal discomfort / Epigastric distress.",
+                        subjective: "Patient describes abdominal symptoms: \"" + rawText.slice(0, 100) + "...\"",
+                        objective: "Abdomen soft, non-tender, bowel sounds present.",
+                        assessment: "Dyspepsia / Gastroesophageal Reflux",
+                        plan: "1. Cap Pantoprazole 40mg OD before breakfast\n2. Antacid syrup 10ml post meals\n3. Dietary modification.",
+                        icd_10_codes: [
+                            {"code": "K21.9", "description": "Gastro-esophageal reflux disease"},
+                            {"code": "R12", "description": "Heartburn"}
+                        ]
+                    };
+                }
+
+                // Render SOAP
+                outChief.innerText = mockResult.chief_complaint;
+                outSubjective.innerText = mockResult.subjective;
+                outObjective.innerText = mockResult.objective;
+                outAssessment.innerText = mockResult.assessment;
+                outPlan.innerText = mockResult.plan;
+
+                // Render ICD
+                icdListContainer.innerHTML = "";
+                mockResult.icd_10_codes.forEach(item => {
+                    const div = document.createElement("div");
+                    div.className = "flex items-center justify-between p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-xs";
+                    div.innerHTML = `<span class="font-mono font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded">${item.code}</span><span class="text-slate-700 ml-2 flex-grow">${item.description}</span>`;
+                    icdListContainer.appendChild(div);
+                });
+
+                // Render JSON
+                jsonOutput.innerText = JSON.stringify({
+                    resourceType: "Composition",
+                    status: "final",
+                    category: [{ coding: [{ system: "http://loinc.org", code: "11503-0", display: "Medical records" }] }],
+                    subject: { reference: "Patient/UP-Clinic-Demo" },
+                    encounter: { display: "OPD Consultation - Custom Input" },
+                    section: [
+                        { title: "SOAP Note", text: mockResult },
+                        { billing: mockResult.icd_10_codes }
+                    ]
+                }, null, 2);
+
+                processBtn.innerHTML = "⚡ Generate Medical Scribe Note";
+                processBtn.disabled = false;
+            }, 500);
+        });
+
+        // Trigger initial load
+        processBtn.click();
+
+        // Export button simulation
+        document.getElementById("exportBtn").addEventListener("click", () => {
+            alert("Generating ABHA-compliant clinical prescription PDF summary...");
+        });
+
+        document.getElementById("copyJsonBtn").addEventListener("click", () => {
+            navigator.clipboard.writeText(jsonOutput.innerText);
+            alert("FHIR JSON payload copied to clipboard!");
+        });
+
+        // Text-To-Speech function
+        document.getElementById("ttsBtn").addEventListener("click", () => {
+            const textToSpeak = dialogueInput.value;
+            if (!textToSpeak) return;
+            const utterance = new SpeechSynthesisUtterance(textToSpeak);
+            utterance.lang = "hi-IN";
+            window.speechSynthesis.speak(utterance);
+        });
+    </script>
+</body>
+</html>
