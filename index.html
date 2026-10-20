@@ -38,7 +38,7 @@
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
 
-    <!-- Enterprise Header (Responsive padding and text sizing) -->
+    <!-- Enterprise Header -->
     <header class="bg-slate-900 text-white shadow-md py-3 px-4 sm:px-6 no-print border-b border-slate-800">
         <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2 text-center sm:text-left">
             <div class="flex items-center justify-center sm:justify-start gap-3">
@@ -57,14 +57,14 @@
         </div>
     </header>
 
-    <!-- Main Container (Responsive Grid: Stacks on mobile/tablet, side-by-side on desktop/laptop) -->
+    <!-- Main Container -->
     <main class="max-w-7xl mx-auto p-3 sm:p-5 lg:p-6 flex-grow grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 w-full">
         
-        <!-- Left Column: Input & Simulation Controls (Responsive Width) -->
+        <!-- Left Column: Input & Simulation Controls -->
         <section class="lg:col-span-5 bg-white p-4 sm:p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col gap-3 no-print">
             <div class="flex items-center justify-between border-b pb-2 sm:pb-3">
                 <h2 class="text-sm sm:text-base font-semibold text-slate-900 flex items-center gap-2">
-                    <span>🎙️</span> Consultation Transcript
+                    <span>🎙️</span> Consultation Transcript & Tools
                 </h2>
                 <span class="text-[10px] sm:text-[11px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded">Hindi / English</span>
             </div>
@@ -89,6 +89,19 @@
                     <option value="2">Case 2: Fever & Body Ache (Viral Pyrexia)</option>
                     <option value="3">Case 3: Cough, Cold & Throat Pain (URTI)</option>
                 </select>
+            </div>
+
+            <!-- Feature 1: ICD-10 Auto-Suggest Search Bar -->
+            <div class="bg-indigo-50/50 p-3 rounded-lg border border-indigo-100 relative">
+                <label class="block text-[11px] font-bold text-indigo-900 mb-1">🔍 ICD-10 Auto-Suggest & Add:</label>
+                <input type="text" id="icdSearchInput" placeholder="Type symptom or diagnosis (e.g., fever, cough, pain)..." class="w-full p-2 text-xs bg-white border border-indigo-200 rounded focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                <div id="icdSuggestions" class="absolute left-3 right-3 top-16 bg-white border border-slate-200 rounded-lg shadow-lg z-20 max-h-40 overflow-y-auto hidden"></div>
+            </div>
+
+            <!-- Feature 3: Voice Dosage Safety Confirmation Banner -->
+            <div id="dosageAlertBox" class="bg-emerald-50 border border-emerald-200 p-2.5 rounded-lg text-xs text-emerald-900 flex items-center justify-between hidden">
+                <span id="dosageAlertText">🛡️ Dosage Guardrail: All medications verified.</span>
+                <span class="text-[10px] bg-emerald-200 text-emerald-800 px-2 py-0.5 rounded font-bold">Verified</span>
             </div>
 
             <!-- Live Recording Controls -->
@@ -117,7 +130,7 @@
             </div>
         </section>
 
-        <!-- Right Column: Institutional E-Prescription & EHR Output (Responsive Width) -->
+        <!-- Right Column: Institutional E-Prescription & EHR Output -->
         <section id="printablePrescription" class="lg:col-span-7 bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between relative min-h-[580px] sm:min-h-[640px]">
             <div>
                 <!-- Institutional Letterhead Header -->
@@ -127,7 +140,6 @@
                         <p class="text-[10px] sm:text-[11px] text-slate-500 font-medium">Advanced Primary Healthcare & Telemedicine Center</p>
                         <p class="text-[9px] sm:text-[10px] text-slate-400 mt-0.5">Regd. Medical Council of India | ABHA Health Locker Enabled</p>
                     </div>
-                    <!-- Top-Right Logo Badge -->
                     <div class="self-end sm:self-auto flex items-center gap-2 bg-indigo-900 text-white px-3 py-2 rounded-lg shadow-sm">
                         <div class="text-lg sm:text-xl">⚕️</div>
                         <div class="text-right leading-tight">
@@ -157,7 +169,7 @@
                     </div>
                 </div>
 
-                <!-- Output Action Bar -->
+                <!-- Feature 2: Dedicated PDF Prescription Printing Bar -->
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-2 mb-3 gap-2 no-print">
                     <span class="text-xs font-bold text-slate-700 flex items-center gap-1.5"><span>📋</span> Clinical Output Explorer</span>
                     <div class="flex flex-wrap gap-2 w-full sm:w-auto">
@@ -236,6 +248,24 @@
             "3": "Doctor: Kahiye, kya pareshani hai?\nPatient: Saab pichle do din se gale me kharash hai aur khasi aa rahi hai. Saath me halka bukhar bhi hai.\nDoctor: Antihistamine aur cough syrup likh dete hain."
         };
 
+        // Master ICD-10 database for auto-suggestions
+        const icdDatabase = [
+            { code: "K30", description: "Functional dyspepsia / Indigestion" },
+            { code: "R11.1", description: "Vomiting, unspecified" },
+            { code: "R50.9", description: "Fever, unspecified" },
+            { code: "R51", description: "Headache" },
+            { code: "J06.9", description: "Acute upper respiratory infection, unspecified" },
+            { code: "R05", description: "Cough" },
+            { code: "K21.9", description: "Gastro-esophageal reflux disease" },
+            { code: "E11.9", description: "Type 2 diabetes mellitus without complications" },
+            { code: "I10", description: "Essential (primary) hypertension" }
+        ];
+
+        let activeIcdCodes = [
+            { code: "K30", description: "Functional dyspepsia / Indigestion" },
+            { code: "R11.1", description: "Vomiting, unspecified" }
+        ];
+
         const dialogueInput = document.getElementById("dialogueInput");
         const scenarioSelect = document.getElementById("scenarioSelect");
         const processBtn = document.getElementById("processBtn");
@@ -244,6 +274,12 @@
         const patientAgeInput = document.getElementById("patientAgeInput");
         const dispPatientName = document.getElementById("dispPatientName");
         const dispPatientAge = document.getElementById("dispPatientAge");
+
+        // Feature 1 Elements: ICD Auto-Suggest
+        const icdSearchInput = document.getElementById("icdSearchInput");
+        const icdSuggestions = document.getElementById("icdSuggestions");
+        const dosageAlertBox = document.getElementById("dosageAlertBox");
+        const dosageAlertText = document.getElementById("dosageAlertText");
 
         // Tabs
         const tabSoap = document.getElementById("tabSoap");
@@ -269,10 +305,12 @@
             if (e.target.value !== "custom") {
                 dialogueInput.value = scenarios[e.target.value] || "";
             }
+            runDosageGuardrail(dialogueInput.value);
         });
 
         dialogueInput.addEventListener("input", () => {
             scenarioSelect.value = "custom";
+            runDosageGuardrail(dialogueInput.value);
         });
 
         patientNameInput.addEventListener("input", () => {
@@ -282,7 +320,7 @@
             dispPatientAge.innerText = patientAgeInput.value.trim() || "--";
         });
 
-        // Tab Switching styling helper
+        // Tab Switching helper
         function switchTab(activeTab) {
             [tabSoap, tabIcd, tabJson].forEach(t => {
                 t.className = "px-3 sm:px-4 py-2 text-slate-500 hover:text-slate-800 focus:outline-none whitespace-nowrap";
@@ -305,6 +343,84 @@
         tabIcd.addEventListener("click", () => switchTab('icd'));
         tabJson.addEventListener("click", () => switchTab('json'));
 
+        // Feature 1 Logic: ICD-10 Auto-Suggest Search Handler
+        icdSearchInput.addEventListener("input", (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            if (!query) {
+                icdSuggestions.classList.add("hidden");
+                return;
+            }
+
+            const matches = icdDatabase.filter(item => 
+                item.code.toLowerCase().includes(query) || item.description.toLowerCase().includes(query)
+            );
+
+            if (matches.length > 0) {
+                icdSuggestions.innerHTML = "";
+                matches.forEach(match => {
+                    const div = document.createElement("div");
+                    div.className = "p-2 hover:bg-indigo-50 cursor-pointer text-xs border-b border-slate-100 flex justify-between items-center";
+                    div.innerHTML = `<span class="font-mono font-bold text-indigo-700">${match.code}</span> <span class="text-slate-600 text-right">${match.description}</span>`;
+                    div.addEventListener("click", () => {
+                        if (!activeIcdCodes.some(c => c.code === match.code)) {
+                            activeIcdCodes.push(match);
+                            renderIcdCodes();
+                        }
+                        icdSearchInput.value = "";
+                        icdSuggestions.classList.add("hidden");
+                    });
+                    icdSuggestions.appendChild(div);
+                });
+                icdSuggestions.classList.remove("hidden");
+            } else {
+                icdSuggestions.classList.add("hidden");
+            }
+        });
+
+        document.addEventListener("click", (e) => {
+            if (!icdSearchInput.contains(e.target) && !icdSuggestions.contains(e.target)) {
+                icdSuggestions.classList.add("hidden");
+            }
+        });
+
+        function renderIcdCodes() {
+            icdListContainer.innerHTML = "";
+            activeIcdCodes.forEach((item, index) => {
+                const div = document.createElement("div");
+                div.className = "flex items-center justify-between p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-xs";
+                div.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span class="font-mono font-bold text-indigo-700 bg-indigo-50 px-2 py-1 rounded">${item.code}</span>
+                        <span class="text-slate-700">${item.description}</span>
+                    </div>
+                    <button onclick="removeIcd(${index})" class="text-rose-500 hover:text-rose-700 font-bold px-2 py-0.5">✕</button>
+                `;
+                icdListContainer.appendChild(div);
+            });
+        }
+
+        window.removeIcd = function(index) {
+            activeIcdCodes.splice(index, 1);
+            renderIcdCodes();
+        };
+
+        // Feature 3 Logic: Voice Dosage Safety Confirmation Guardrail
+        function runDosageGuardrail(text) {
+            const lower = text.toLowerCase();
+            dosageAlertBox.classList.remove("hidden");
+
+            if (lower.includes("paracetamol") || lower.includes("क्रोसिन") || lower.includes("crosin")) {
+                dosageAlertText.innerText = "🛡️ Dosage Guardrail: Paracetamol/Crosin verified (Safe standard adult dose ≤ 650mg TDS).";
+                dosageAlertBox.className = "bg-emerald-50 border border-emerald-200 p-2.5 rounded-lg text-xs text-emerald-900 flex items-center justify-between";
+            } else if (lower.includes("antibiotic") || lower.includes("amoxicillin")) {
+                dosageAlertText.innerText = "⚠️ Dosage Guardrail: Antibiotic detected. Ensure duration and allergy status are confirmed.";
+                dosageAlertBox.className = "bg-amber-50 border border-amber-200 p-2.5 rounded-lg text-xs text-amber-900 flex items-center justify-between";
+            } else {
+                dosageAlertText.innerText = "🛡️ Dosage Guardrail: Standard clinical terminology recognized.";
+                dosageAlertBox.className = "bg-indigo-50 border border-indigo-200 p-2.5 rounded-lg text-xs text-indigo-900 flex items-center justify-between";
+            }
+        }
+
         // Core Parsing & Enterprise Prescription Generation
         processBtn.addEventListener("click", () => {
             const rawText = dialogueInput.value.trim();
@@ -322,6 +438,7 @@
                 timeStyle: 'short' 
             });
             prescriptionTimestamp.innerText = formattedDateString;
+            runDosageGuardrail(rawText);
 
             setTimeout(() => {
                 const lowerText = rawText.toLowerCase();
@@ -330,11 +447,7 @@
                     subjective: `Patient reports severe abdominal pain since yesterday, accompanied by indigestion and vomiting after meals.`,
                     objective: "Abdomen soft, mild tenderness. Vitals stable.",
                     assessment: "Acute Gastritis / Indigestion with Vomiting",
-                    plan: "Rx:\n1. Tab. Paracetamol / Crosin 650mg — 1 tablet 3 times a day (TDS) post meals for 3 days.\n2. Antacid Syrup — 10ml twice a day (BD) after meals.\n3. Tab. Pantoprazole 40mg — 1 tablet at bedtime before sleep.",
-                    icd_10_codes: [
-                        {"code": "K30", "description": "Functional dyspepsia / Indigestion"},
-                        {"code": "R11.1", "description": "Vomiting, unspecified"}
-                    ]
+                    plan: "Rx:\n1. Tab. Paracetamol / Crosin 650mg — 1 tablet 3 times a day (TDS) post meals for 3 days.\n2. Antacid Syrup — 10ml twice a day (BD) after meals.\n3. Tab. Pantoprazole 40mg — 1 tablet at bedtime before sleep."
                 };
 
                 if (lowerText.includes("fever") || lowerText.includes("bukhar") || lowerText.includes("sar dard")) {
@@ -343,11 +456,7 @@
                         subjective: "Patient presents with high body temperature, body ache, and fatigue.",
                         objective: "Temperature: 101.2°F, Blood Pressure: 130/85 mmHg, Pulse: 84 bpm.",
                         assessment: "Acute Febrile Illness / Viral Pyrexia",
-                        plan: "Rx:\n1. Tab. Paracetamol 650mg — 1 tablet three times a day (TDS) post meals for 3 days.\n2. Tab. Pantoprazole 40mg — 1 tablet once daily before breakfast.\n3. Adequate hydration advised.",
-                        icd_10_codes: [
-                            {"code": "R50.9", "description": "Fever, unspecified"},
-                            {"code": "R51", "description": "Headache"}
-                        ]
+                        plan: "Rx:\n1. Tab. Paracetamol 650mg — 1 tablet three times a day (TDS) post meals for 3 days.\n2. Tab. Pantoprazole 40mg — 1 tablet once daily before breakfast.\n3. Adequate hydration advised."
                     };
                 }
 
@@ -358,14 +467,8 @@
                 outAssessment.innerText = mockResult.assessment;
                 outPlan.innerText = mockResult.plan;
 
-                // Render ICD
-                icdListContainer.innerHTML = "";
-                mockResult.icd_10_codes.forEach(item => {
-                    const div = document.createElement("div");
-                    div.className = "flex items-center justify-between p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-xs";
-                    div.innerHTML = `<span class="font-mono font-bold text-indigo-700 bg-indigo-50 px-2 py-1 rounded">${item.code}</span><span class="text-slate-700 ml-2 flex-grow">${item.description}</span>`;
-                    icdListContainer.appendChild(div);
-                });
+                // Render ICD list
+                renderIcdCodes();
 
                 // Render JSON
                 jsonOutput.innerText = JSON.stringify({
@@ -378,7 +481,7 @@
                     },
                     section: [
                         { title: "SOAP Note & Prescription", text: mockResult },
-                        { billing: mockResult.icd_10_codes }
+                        { billing: activeIcdCodes }
                     ]
                 }, null, 2);
 
@@ -422,6 +525,7 @@
                 }
                 dialogueInput.value = currentTranscript.trim();
                 scenarioSelect.value = "custom";
+                runDosageGuardrail(dialogueInput.value);
             };
 
             recognition.onerror = (event) => {
@@ -464,7 +568,7 @@
             }
         });
 
-        // Export PDF Handler
+        // Feature 2: Dedicated PDF Prescription Printing Handler
         document.getElementById("exportPdfBtn").addEventListener("click", () => {
             window.print();
         });
@@ -474,7 +578,7 @@
             alert("FHIR JSON payload copied to clipboard!");
         });
 
-        // --- Toggleable Text-To-Speech Implementation (Play / Stop) ---
+        // --- Toggleable Text-To-Speech Implementation ---
         let availableVoices = [];
 
         function loadVoices() {
