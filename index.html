@@ -21,7 +21,7 @@
                 top: 0;
                 width: 100%;
                 margin: 0;
-                padding: 20px;
+                padding: 15px;
                 border: none !important;
                 box-shadow: none !important;
             }
@@ -42,7 +42,7 @@
             </div>
             <div class="flex items-center gap-3">
                 <span class="bg-emerald-500 text-xs px-2.5 py-1 rounded-full font-medium text-white shadow-inner">ABDM Compliant Sandbox</span>
-                <span class="bg-indigo-800 text-xs px-2.5 py-1 rounded-full text-indigo-200 border border-indigo-600">v1.5.0-MVP</span>
+                <span class="bg-indigo-800 text-xs px-2.5 py-1 rounded-full text-indigo-200 border border-indigo-600">v1.6.0-MVP</span>
             </div>
         </div>
     </header>
@@ -105,86 +105,99 @@
             </div>
         </section>
 
-        <!-- Right Column: Structured Output & PDF View (7 Cols) -->
-        <section id="printablePrescription" class="lg:col-span-7 bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col gap-4">
-            <!-- Clinic Header (Visible prominently in PDF) -->
-            <div class="border-b pb-3 flex justify-between items-start">
-                <div>
-                    <h2 class="text-lg font-bold text-indigo-900">NIDAN CLINICAL SERVICES</h2>
-                    <p class="text-xs text-slate-500">General OPD & Vernacular Telemedicine Unit, UP</p>
-                </div>
-                <div class="text-right">
-                    <span class="bg-indigo-50 text-indigo-700 border border-indigo-200 text-[10px] font-bold px-2 py-1 rounded">E-PRESCRIPTION</span>
-                </div>
-            </div>
-
-            <!-- Patient Info Box -->
-            <div class="bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs grid grid-cols-2 sm:grid-cols-3 gap-2">
-                <div>
-                    <span class="text-slate-400 block text-[10px] uppercase font-bold">Patient Name</span>
-                    <span id="dispPatientName" class="font-semibold text-slate-800 text-sm">Ramesh Kumar</span>
-                </div>
-                <div>
-                    <span class="text-slate-400 block text-[10px] uppercase font-bold">Age / Sex</span>
-                    <span id="dispPatientAge" class="font-semibold text-slate-800 text-sm">42 Yrs / M</span>
-                </div>
-                <div class="col-span-2 sm:col-span-1">
-                    <span class="text-slate-400 block text-[10px] uppercase font-bold">Date & Time</span>
-                    <span id="prescriptionTimestamp" class="font-semibold text-slate-800 text-xs">--</span>
-                </div>
-            </div>
-
-            <!-- Output Action Bar -->
-            <div class="flex justify-between items-center border-b pb-2 no-print">
-                <span class="text-xs font-bold text-slate-700">Clinical Data Summary</span>
-                <div class="flex gap-2">
-                    <button id="copyJsonBtn" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1 rounded border border-slate-300 transition">Copy FHIR JSON</button>
-                    <button id="exportPdfBtn" class="text-xs bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded font-medium transition shadow-sm flex items-center gap-1">📥 Export PDF</button>
-                </div>
-            </div>
-
-            <!-- Output Tabs -->
-            <div class="flex border-b border-slate-200 text-sm no-print">
-                <button id="tabSoap" class="px-4 py-2 font-medium text-indigo-600 border-b-2 border-indigo-600 focus:outline-none">SOAP Summary</button>
-                <button id="tabIcd" class="px-4 py-2 font-medium text-slate-500 hover:text-slate-800 focus:outline-none">ICD-10 & Billing</button>
-                <button id="tabJson" class="px-4 py-2 font-medium text-slate-500 hover:text-slate-800 focus:outline-none">ABDM FHIR Payload</button>
-            </div>
-
-            <!-- Tab Content 1: SOAP Note -->
-            <div id="contentSoap" class="space-y-3 text-sm flex-grow overflow-y-auto max-h-[360px] pr-1">
-                <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
-                    <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider block mb-1">Chief Complaint</span>
-                    <p id="outChief" class="text-slate-700 italic">Generate to view...</p>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
-                        <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider block mb-1">Subjective (S)</span>
-                        <p id="outSubjective" class="text-slate-700 text-xs">...</p>
+        <!-- Right Column: Structured Output & Printable Prescription (7 Cols) -->
+        <section id="printablePrescription" class="lg:col-span-7 bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between relative min-h-[580px]">
+            <div>
+                <!-- Clinic Header with Logo on Top Right -->
+                <div class="border-b pb-3 flex justify-between items-start">
+                    <div>
+                        <h2 class="text-lg font-bold text-indigo-900">NIDAN CLINICAL SERVICES</h2>
+                        <p class="text-xs text-slate-500">General OPD & Vernacular Telemedicine Unit, UP</p>
                     </div>
-                    <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
-                        <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider block mb-1">Objective Vitals (O)</span>
-                        <p id="outObjective" class="text-slate-700 text-xs">...</p>
+                    <!-- Top-Right Logo Badge -->
+                    <div class="flex items-center gap-2 bg-indigo-50 border border-indigo-200 px-3 py-1.5 rounded-lg shadow-sm">
+                        <span class="text-xl">⚕️</span>
+                        <div class="text-right">
+                            <span class="block text-[10px] font-bold text-indigo-900 tracking-wider">NIDAN CARE</span>
+                            <span class="block text-[9px] text-indigo-600 font-medium">Verified E-Rx</span>
+                        </div>
                     </div>
                 </div>
-                <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
-                    <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider block mb-1">Assessment & Diagnosis (A)</span>
-                    <p id="outAssessment" class="text-slate-700 text-xs">...</p>
+
+                <!-- Patient Info Box -->
+                <div class="bg-slate-50 border border-slate-200 rounded-lg p-3 my-3 text-xs grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    <div>
+                        <span class="text-slate-400 block text-[10px] uppercase font-bold">Patient Name</span>
+                        <span id="dispPatientName" class="font-semibold text-slate-800 text-sm">Ramesh Kumar</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 block text-[10px] uppercase font-bold">Age / Sex</span>
+                        <span id="dispPatientAge" class="font-semibold text-slate-800 text-sm">42 Yrs / M</span>
+                    </div>
+                    <div class="col-span-2 sm:col-span-1">
+                        <span class="text-slate-400 block text-[10px] uppercase font-bold">Date & Time</span>
+                        <span id="prescriptionTimestamp" class="font-semibold text-slate-800 text-xs">--</span>
+                    </div>
                 </div>
-                <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
-                    <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider block mb-1">Treatment Plan & Rx (Prescription)</span>
-                    <p id="outPlan" class="text-slate-700 text-xs font-mono whitespace-pre-line">...</p>
+
+                <!-- Output Action Bar -->
+                <div class="flex justify-between items-center border-b pb-2 mb-3 no-print">
+                    <span class="text-xs font-bold text-slate-700">Clinical Data Summary</span>
+                    <div class="flex gap-2">
+                        <button id="copyJsonBtn" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1 rounded border border-slate-300 transition">Copy FHIR JSON</button>
+                        <button id="exportPdfBtn" class="text-xs bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded font-medium transition shadow-sm flex items-center gap-1">📥 Export PDF</button>
+                    </div>
+                </div>
+
+                <!-- Output Tabs -->
+                <div class="flex border-b border-slate-200 text-sm mb-3 no-print">
+                    <button id="tabSoap" class="px-4 py-2 font-medium text-indigo-600 border-b-2 border-indigo-600 focus:outline-none">SOAP Summary</button>
+                    <button id="tabIcd" class="px-4 py-2 font-medium text-slate-500 hover:text-slate-800 focus:outline-none">ICD-10 & Billing</button>
+                    <button id="tabJson" class="px-4 py-2 font-medium text-slate-500 hover:text-slate-800 focus:outline-none">ABDM FHIR Payload</button>
+                </div>
+
+                <!-- Tab Content 1: SOAP Note -->
+                <div id="contentSoap" class="space-y-3 text-sm overflow-y-auto max-h-[320px] pr-1">
+                    <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                        <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider block mb-1">Chief Complaint</span>
+                        <p id="outChief" class="text-slate-700 italic">Generate to view...</p>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                            <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider block mb-1">Subjective (S)</span>
+                            <p id="outSubjective" class="text-slate-700 text-xs">...</p>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                            <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider block mb-1">Objective Vitals (O)</span>
+                            <p id="outObjective" class="text-slate-700 text-xs">...</p>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                        <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider block mb-1">Assessment & Diagnosis (A)</span>
+                        <p id="outAssessment" class="text-slate-700 text-xs">...</p>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                        <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider block mb-1">Treatment Plan & Rx (Prescription)</span>
+                        <p id="outPlan" class="text-slate-700 text-xs font-mono whitespace-pre-line">...</p>
+                    </div>
+                </div>
+
+                <!-- Tab Content 2: ICD-10 Codes -->
+                <div id="contentIcd" class="space-y-2 text-sm overflow-y-auto max-h-[320px] hidden">
+                    <p class="text-xs text-slate-500 mb-2">Automatically matched diagnostic codes for clinic reimbursement & ABDM reporting:</p>
+                    <div id="icdListContainer" class="space-y-2"></div>
+                </div>
+
+                <!-- Tab Content 3: JSON Payload -->
+                <div id="contentJson" class="flex flex-col hidden">
+                    <pre id="jsonOutput" class="bg-slate-900 text-emerald-400 p-3 rounded-lg text-xs font-mono overflow-x-auto max-h-[320px]">Click 'Generate English Prescription' to view FHIR payload...</pre>
                 </div>
             </div>
 
-            <!-- Tab Content 2: ICD-10 Codes -->
-            <div id="contentIcd" class="space-y-2 text-sm flex-grow overflow-y-auto max-h-[360px] hidden">
-                <p class="text-xs text-slate-500 mb-2">Automatically matched diagnostic codes for clinic reimbursement & ABDM reporting:</p>
-                <div id="icdListContainer" class="space-y-2"></div>
-            </div>
-
-            <!-- Tab Content 3: JSON Payload -->
-            <div id="contentJson" class="flex-grow flex flex-col hidden">
-                <pre id="jsonOutput" class="bg-slate-900 text-emerald-400 p-3 rounded-lg text-xs font-mono overflow-x-auto flex-grow max-h-[340px]">Click 'Generate English Prescription' to view FHIR payload...</pre>
+            <!-- Bottom-Left Copyright Footer -->
+            <div class="border-t pt-3 mt-4 flex justify-between items-center text-[10px] text-slate-400">
+                <span>© 2026 NIDAN AI Healthcare Systems. All rights reserved.</span>
+                <span class="italic">Digitally Verified Clinical Output</span>
             </div>
         </section>
 
@@ -242,7 +255,6 @@
             scenarioSelect.value = "custom";
         });
 
-        // Sync patient details live to display box
         patientNameInput.addEventListener("input", () => {
             dispPatientName.innerText = patientNameInput.value.trim() || "Unknown Patient";
         });
