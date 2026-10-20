@@ -3,176 +3,419 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NIDAN - Vernacular AI Scribe & Billing Assistant</title>
+    <title>NIDAN Pro - Clinical AI Scribe & E-Prescription Suite</title>
+    <!-- Tailwind CSS CDN for modern UI design -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Print-specific styles for clean PDF export */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #printablePrescription, #printablePrescription * {
+                visibility: visible;
+            }
+            #printablePrescription {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                margin: 0;
+                padding: 24px;
+                background: white !important;
+                border: none !important;
+                box-shadow: none !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans antialiased">
-    <div class="max-w-4xl mx-auto p-4 md:p-6">
+<body class="bg-slate-100 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- Enterprise Header -->
+    <header class="bg-slate-900 text-white shadow-md py-3 px-6 no-print border-b border-slate-800">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
+            <div class="flex items-center gap-3">
+                <div class="bg-indigo-600 p-2 rounded-lg text-white font-bold text-lg shadow">⚕️</div>
+                <div>
+                    <h1 class="text-lg font-bold tracking-wide text-white">NIDAN PRO <span class="text-xs font-normal text-indigo-400 bg-indigo-950 px-2 py-0.5 rounded border border-indigo-800 ml-2">Enterprise Edition</span></h1>
+                    <p class="text-xs text-slate-400">AI-Powered Vernacular Medical Scribe & Practice Management</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 text-xs">
+                <span class="bg-emerald-950 text-emerald-400 border border-emerald-800 px-3 py-1 rounded-full font-medium flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> ABDM Sandbox Live
+                </span>
+                <span class="bg-slate-800 text-slate-300 px-3 py-1 rounded-full border border-slate-700">Dr. Sharma, MBBS (OPD 3)</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto p-4 sm:p-6 flex-grow grid grid-cols-1 lg:grid-cols-12 gap-6 w-full">
         
-        <!-- Header -->
-        <header class="bg-indigo-700 text-white p-6 rounded-2xl shadow-lg mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <div>
-                <div class="flex items-center gap-2">
-                    <span class="text-3xl">🩺</span>
-                    <h1 class="text-2xl font-bold tracking-tight">NIDAN</h1>
-                </div>
-                <p class="text-indigo-200 text-sm mt-1">Uttar Pradesh Tier-2/3 Private Clinic Pilot Edition</p>
-            </div>
-            <span class="bg-indigo-800 text-indigo-100 text-xs px-3 py-1.5 rounded-full font-medium border border-indigo-600">
-                ABDM Compliant Sandbox v1.6.0-MVP
-            </span>
-        </header>
-
-        <!-- Consultation Input Section -->
-        <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-6">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-lg font-semibold text-slate-900 flex items-center gap-2">
-                    <span>🎙️</span> Consultation Input & Live Recording
+        <!-- Left Column: Input & Simulation Controls (5 Cols) -->
+        <section class="lg:col-span-5 bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col gap-3 no-print">
+            <div class="flex items-center justify-between border-b pb-3">
+                <h2 class="text-base font-semibold text-slate-900 flex items-center gap-2">
+                    <span>🎙️</span> Consultation Input
                 </h2>
-                <div id="micStatus" class="text-xs font-medium text-slate-500 bg-slate-100 px-3 py-1 rounded-full">
-                    Mic: Ready
+                <span class="text-[11px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded">Hindi / Awadhi / English</span>
+            </div>
+
+            <!-- Patient Details Inputs -->
+            <div class="grid grid-cols-3 gap-2 bg-slate-50 p-3 rounded-lg border border-slate-200">
+                <div class="col-span-2">
+                    <label class="block text-[11px] font-semibold text-slate-600 mb-1">Patient Full Name:</label>
+                    <input type="text" id="patientNameInput" value="Ramesh Kumar" class="w-full p-2 text-xs bg-white border border-slate-300 rounded focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-semibold text-slate-600 mb-1">Age / Sex:</label>
+                    <input type="text" id="patientAgeInput" value="42 Yrs / M" class="w-full p-2 text-xs bg-white border border-slate-300 rounded focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                 </div>
             </div>
 
-            <!-- Preset Selector -->
-            <div class="mb-4">
-                <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">
-                    Select Preset UP Clinical Scenario (or edit text below):
-                </label>
-                <select id="scenarioSelect" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                    <option value="custom">-- Custom Dialogue --</option>
-                    <option value="viral">Fever & Body Ache (Viral Pyrexia)</option>
-                    <option value="urti">Cough, Cold & Mild Chest Discomfort (URTI)</option>
-                    <option value="dyspepsia">Abdominal Pain & Gastric Issues (Dyspepsia)</option>
+            <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Select Preset Clinical Case:</label>
+                <select id="scenarioSelect" class="w-full p-2.5 text-xs bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium text-slate-700">
+                    <option value="custom">-- Custom Live Dialogue --</option>
+                    <option value="1" selected>Case 1: Fever & Body Ache (Viral Pyrexia)</option>
+                    <option value="2">Case 2: Cough, Cold & Throat Pain (URTI)</option>
+                    <option value="3">Case 3: Abdominal Pain & Acid Reflux (GERD)</option>
                 </select>
             </div>
 
-            <!-- Live Audio Controls -->
-            <div class="flex flex-wrap items-center gap-3 mb-4">
-                <button id="startListeningBtn" class="bg-rose-600 hover:bg-rose-700 text-white font-medium px-4 py-2.5 rounded-xl text-sm shadow-sm flex items-center gap-2 transition-all">
-                    <span id="micIcon" class="w-2.5 h-2.5 rounded-full bg-white animate-pulse"></span>
-                    <span id="listenBtnText">🔴 Start Full Recording</span>
+            <!-- Live Recording Controls -->
+            <div class="bg-gradient-to-r from-indigo-50 to-slate-50 border border-indigo-100 rounded-lg p-3 flex items-center justify-between shadow-xs">
+                <div>
+                    <span class="text-xs font-bold text-indigo-950 block" id="recStatusLabel">Ambient Voice Scribe</span>
+                    <span class="text-[11px] text-slate-500">Record doctor-patient conversation</span>
+                </div>
+                <button id="recordMicBtn" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold px-3.5 py-2 rounded-lg transition flex items-center gap-1.5 shadow-sm">
+                    <span id="micIcon">🔴</span> <span id="micBtnText">Start Listening</span>
                 </button>
-                <span class="text-xs text-slate-500">Captures continuous dialogue, extracts patient name/age, and generates English Rx.</span>
             </div>
 
-            <!-- Editable Transcript Text Area -->
-            <div class="mb-4">
-                <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">
-                    Doctor-Patient Spoken Dialogue (Fully Editable / Auto-Captured):
-                </label>
-                <textarea id="dialogueInput" rows="5" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none leading-relaxed">Doctor: Namaskar, aapka naam aur umar kya hai?
-Patient: Namaskar doctor saab, mera naam Ramesh Kumar hai aur umar 42 saal hai. Teen din se bahut tez sar dard hai aur subah se bukhar lag raha hai.
-Doctor: Khana khaya ja raha hai? Ulti jaisa lag raha hai?
-Patient: Ji, khana khane ka man nahi kar raha, ghabrahat ho rahi hai.
-Doctor: B.P. 130/85 hai, temperature 101.2 Fahrenheit. Paracetamol 650mg subah-shaam aur Pantocid ek goli khali pet lena, sath me do injection likh raha hu wo lagwa lena. Viral fever lag raha hai.</textarea>
+            <div class="flex-grow flex flex-col">
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Consultation Transcript (Editable):</label>
+                <textarea id="dialogueInput" rows="5" class="w-full p-3 text-xs bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none font-mono text-slate-700 leading-relaxed" placeholder="Doctor-patient audio transcript appears here..."></textarea>
             </div>
 
-            <div class="flex flex-wrap gap-3">
-                <button id="generateBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-5 py-2.5 rounded-xl text-sm shadow-sm transition-all flex items-center gap-2">
-                    ⚡ Generate English Prescription & Scribe Note
+            <div class="flex gap-3 pt-1">
+                <button id="processBtn" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 px-4 rounded-lg text-xs transition shadow-sm flex items-center justify-center gap-2">
+                    <span>⚡ Generate Professional Rx</span>
                 </button>
-                <button id="listenSpeechBtn" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium px-4 py-2.5 rounded-xl text-sm transition-all">
-                    🔊 Listen Audio Summary
+                <button id="ttsBtn" class="bg-white hover:bg-slate-100 text-slate-700 font-semibold py-2.5 px-3 rounded-lg text-xs border border-slate-300 transition shadow-xs" title="Listen Audio">
+                    🔊 Listen
                 </button>
             </div>
         </section>
 
-        <!-- Structured Clinical Output Section -->
-        <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 pb-4 border-b border-slate-100">
-                <div>
-                    <h2 class="text-lg font-semibold text-slate-900 flex items-center gap-2">
-                        <span>📋</span> Structured Clinical Output & Prescription
-                    </h2>
-                    <p class="text-xs text-slate-500 mt-0.5">Extracted automatically from voice communication</p>
-                </div>
-                <div class="flex flex-wrap gap-2">
-                    <button class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium px-3 py-1.5 rounded-lg transition-all">Copy FHIR JSON</button>
-                    <button class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium px-3 py-1.5 rounded-lg transition-all">Export PDF Note</button>
-                </div>
-            </div>
-
-            <!-- Patient Metadata Extracted from Dialogue -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 bg-indigo-50/40 p-4 rounded-xl border border-indigo-100">
-                <div>
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-700 block">Patient Name</span>
-                    <span id="dispName" class="text-sm font-semibold text-slate-800">Ramesh Kumar</span>
-                </div>
-                <div>
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-700 block">Age / Sex</span>
-                    <span id="dispAgeSex" class="text-sm font-semibold text-slate-800">42 Yrs / Male</span>
-                </div>
-                <div>
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-700 block">Date & Time</span>
-                    <span class="text-sm font-semibold text-slate-800">20 Oct 2026, 9:01 pm</span>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                    <h3 class="text-xs font-bold uppercase tracking-wider text-indigo-700 mb-1">Chief Complaint</h3>
-                    <p id="outChief" class="text-sm text-slate-700 font-medium">Acute Febrile Illness with Headache & Fatigue</p>
-                </div>
-                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                    <h3 class="text-xs font-bold uppercase tracking-wider text-indigo-700 mb-1">Assessment & ICD-10</h3>
-                    <p id="outDiagnosis" class="text-sm text-slate-700 font-medium">Viral Pyrexia (ICD-10: R50.9)</p>
-                </div>
-            </div>
-
-            <div class="space-y-4">
-                <div class="bg-indigo-50/50 border border-indigo-100 p-4 rounded-xl">
-                    <h3 class="text-xs font-bold uppercase tracking-wider text-indigo-800 mb-1">Subjective (S)</h3>
-                    <p id="outSubjective" class="text-sm text-slate-700 leading-relaxed">Patient reports high-grade fever and severe headache for 3 days with mild abdominal discomfort and lack of appetite.</p>
-                </div>
-
-                <div class="bg-indigo-50/50 border border-indigo-100 p-4 rounded-xl">
-                    <h3 class="text-xs font-bold uppercase tracking-wider text-indigo-800 mb-1">Objective Vitals (O)</h3>
-                    <p id="outObjective" class="text-sm text-slate-700 leading-relaxed">BP: 130/85 mmHg | Temperature: 101.2°F | General appearance: Alert, fatigued.</p>
-                </div>
-
-                <div class="bg-emerald-50/50 border border-emerald-200 p-4 rounded-xl">
-                    <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-800 mb-1">Treatment Plan & Generated Rx (P)</h3>
-                    <div id="outRx" class="text-sm text-slate-800 mt-2 space-y-2">
-                        <!-- Dynamically populated medications -->
+        <!-- Right Column: Institutional E-Prescription & EHR Output (7 Cols) -->
+        <section id="printablePrescription" class="lg:col-span-7 bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between relative min-h-[640px]">
+            <div>
+                <!-- Institutional Letterhead Header -->
+                <div class="border-b-2 border-indigo-900 pb-4 flex justify-between items-start">
+                    <div>
+                        <h2 class="text-xl font-black tracking-tight text-indigo-950">NIDAN SPECIALTY CLINICS</h2>
+                        <p class="text-[11px] text-slate-500 font-medium">Advanced Primary Healthcare & Telemedicine Center</p>
+                        <p class="text-[10px] text-slate-400 mt-0.5">Regd. Medical Council of India | ABHA Health Locker Enabled</p>
+                    </div>
+                    <!-- Top-Right Logo Badge / QR Verification Simulation -->
+                    <div class="flex items-center gap-2 bg-indigo-900 text-white px-3 py-2 rounded-lg shadow-sm">
+                        <div class="text-xl">⚕️</div>
+                        <div class="text-right leading-tight">
+                            <span class="block text-[11px] font-bold tracking-wide">VERIFIED E-RX</span>
+                            <span class="block text-[9px] text-indigo-200">ABDM Secure ID</span>
+                        </div>
                     </div>
                 </div>
+
+                <!-- Patient Demographics Metadata Card -->
+                <div class="bg-slate-50 border border-slate-200 rounded-lg p-3 my-4 text-xs grid grid-cols-2 sm:grid-cols-4 gap-3 shadow-inner">
+                    <div>
+                        <span class="text-slate-400 block text-[9px] uppercase font-bold tracking-wider">Patient Name</span>
+                        <span id="dispPatientName" class="font-bold text-slate-900 text-sm">Ramesh Kumar</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 block text-[9px] uppercase font-bold tracking-wider">Age / Gender</span>
+                        <span id="dispPatientAge" class="font-bold text-slate-900 text-sm">42 Yrs / M</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 block text-[9px] uppercase font-bold tracking-wider">Consultation ID</span>
+                        <span class="font-bold text-indigo-600 text-xs font-mono">NIDAN-2026-894</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 block text-[9px] uppercase font-bold tracking-wider">Date & Time</span>
+                        <span id="prescriptionTimestamp" class="font-semibold text-slate-800 text-xs">--</span>
+                    </div>
+                </div>
+
+                <!-- Output Action Bar -->
+                <div class="flex justify-between items-center border-b pb-2 mb-3 no-print">
+                    <span class="text-xs font-bold text-slate-700 flex items-center gap-1.5"><span>📋</span> Clinical Output Explorer</span>
+                    <div class="flex gap-2">
+                        <button id="copyJsonBtn" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1 rounded border border-slate-300 transition font-medium">Copy FHIR JSON</button>
+                        <button id="exportPdfBtn" class="text-xs bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-1 rounded font-semibold transition shadow-sm flex items-center gap-1.5"><span>📥</span> Export PDF Rx</button>
+                    </div>
+                </div>
+
+                <!-- Output Tabs -->
+                <div class="flex border-b border-slate-200 text-xs font-medium mb-3 no-print">
+                    <button id="tabSoap" class="px-4 py-2 text-indigo-600 border-b-2 border-indigo-600 focus:outline-none font-semibold">SOAP Summary & Rx</button>
+                    <button id="tabIcd" class="px-4 py-2 text-slate-500 hover:text-slate-800 focus:outline-none">ICD-10 Billing Codes</button>
+                    <button id="tabJson" class="px-4 py-2 text-slate-500 hover:text-slate-800 focus:outline-none">ABDM FHIR Payload</button>
+                </div>
+
+                <!-- Tab Content 1: SOAP Note & Rx -->
+                <div id="contentSoap" class="space-y-3 text-xs overflow-y-auto max-h-[340px] pr-1">
+                    <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                        <span class="text-[10px] font-bold text-indigo-900 uppercase tracking-wider block mb-1">Chief Complaint</span>
+                        <p id="outChief" class="text-slate-700 italic font-medium">Generate to view...</p>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                            <span class="text-[10px] font-bold text-indigo-900 uppercase tracking-wider block mb-1">Subjective (S)</span>
+                            <p id="outSubjective" class="text-slate-700 leading-relaxed">...</p>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                            <span class="text-[10px] font-bold text-indigo-900 uppercase tracking-wider block mb-1">Objective Vitals (O)</span>
+                            <p id="outObjective" class="text-slate-700 leading-relaxed">...</p>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                        <span class="text-[10px] font-bold text-indigo-900 uppercase tracking-wider block mb-1">Assessment & Diagnosis (A)</span>
+                        <p id="outAssessment" class="text-slate-700 font-medium">...</p>
+                    </div>
+                    <div class="bg-indigo-50/50 p-3.5 rounded-lg border border-indigo-100">
+                        <span class="text-[10px] font-bold text-indigo-900 uppercase tracking-wider block mb-1">℞ Treatment Plan & Medication Schedule</span>
+                        <p id="outPlan" class="text-slate-800 font-mono text-xs whitespace-pre-line leading-relaxed">...</p>
+                    </div>
+                </div>
+
+                <!-- Tab Content 2: ICD-10 Codes -->
+                <div id="contentIcd" class="space-y-2 text-xs overflow-y-auto max-h-[340px] hidden">
+                    <p class="text-slate-500 mb-3">Matched diagnostic codes for insurance reimbursement and electronic health records:</p>
+                    <div id="icdListContainer" class="space-y-2"></div>
+                </div>
+
+                <!-- Tab Content 3: JSON Payload -->
+                <div id="contentJson" class="flex flex-col hidden">
+                    <pre id="jsonOutput" class="bg-slate-900 text-emerald-400 p-3.5 rounded-lg text-[11px] font-mono overflow-x-auto max-h-[340px] shadow-inner">Click 'Generate Professional Rx' to view FHIR payload...</pre>
+                </div>
+            </div>
+
+            <!-- Institutional Signature & Bottom-Left Copyright Footer -->
+            <div class="border-t pt-3 mt-4 flex justify-between items-end text-[10px] text-slate-400">
+                <span>© 2026 NIDAN AI Healthcare Systems. All rights reserved.</span>
+                <div class="text-right">
+                    <div class="font-serif italic text-slate-600 text-xs">Dr. R. Sharma, MBBS</div>
+                    <span class="text-[9px] text-slate-500 uppercase font-semibold">Authorized Signatory & Medical Officer</span>
+                </div>
             </div>
         </section>
 
-        <!-- Footer -->
-        <footer class="text-center text-xs text-slate-400 mt-8">
-            NIDAN AI • Uttar Pradesh Regional Healthcare Initiative
-        </footer>
+    </main>
 
-    </div>
+    <!-- Enterprise Footer -->
+    <footer class="text-center py-4 text-xs text-slate-500 border-t border-slate-200 mt-auto no-print bg-white">
+        NIDAN AI Enterprise Platform • Compliant with National Digital Health Mission (NDHM) Standards
+    </footer>
 
+    <!-- Script Logic -->
     <script>
-        // Preset scenarios database
         const scenarios = {
-            viral: "Doctor: Namaskar, aapka naam aur umar kya hai?\nPatient: Mera naam Ramesh Kumar hai aur umar 42 saal hai. Teen din se bahut tez sar dard hai aur subah se bukhar lag raha hai.\nDoctor: Khana khaya ja raha hai? Ulti jaisa lag raha hai?\nPatient: Ji, khana khane ka man nahi kar raha, ghabrahat ho rahi hai.\nDoctor: B.P. 130/85 hai, temperature 101.2 Fahrenheit. Paracetamol 650mg subah-shaam aur Pantocid ek goli khali pet lena, sath me do injection likh raha hu wo lagwa lena. Viral fever lag raha hai.",
-            urti: "Doctor: Aapka shubh naam aur aayu kya hai?\nPatient: Priya Sharma naam hai, umar 28 saal.\nDoctor: Kaisi tabiyat hai?\nPatient: Gala dard kar raha hai aur khasi hai subah se.\nDoctor: Vitals check kiye, SpO2 98% hai. URI lag raha hai. Montek-LC ek goli raat ko aur Azithromycin 500mg 3 din ke liye likh raha hu.",
-            dyspepsia: "Doctor: Namaste, naam aur age bataye?\nPatient: Suresh Verma, 55 years old.\nDoctor: Bataye kya pareshani hai?\nPatient: Pet me bohot jalan ho rahi hai aur khana pachta nahi hai.\nDoctor: Razo-D capsule subah khali pet aur Sucramilt syrup khane ke baad leni hogi 5 din tak."
+            "1": "Doctor: Haan bolo, kya takleef hai?\nPatient: Doctor saab, teen din se bahut tez sar dard hai aur subah se bukhar lag raha hai. Pet me bhi halka dard hai.\nDoctor: Khana khaya ja raha hai? Ulti jaisa lag raha hai?\nPatient: Ji, khana khane ka man nahi kar raha, ghabrahat ho rahi hai.\nDoctor: B.P. 130/85 hai, temperature 101.2 Fahrenheit. Viral fever lag raha hai, dawai likh raha hoon.",
+            "2": "Doctor: Kahiye, kya pareshani hai?\nPatient: Saab pichle do din se gale me kharash hai aur khasi aa rahi hai. Saath me halka bukhar bhi hai.\nDoctor: Balgham aa raha hai kya?\nPatient: Nahi, sukhi khasi hai raat me badh jati hai.\nDoctor: theek hai, chest clear hai. Antihistamine aur cough syrup likh dete hain.",
+            "3": "Doctor: Aaiye, boliye kya hua?\nPatient: Doctor sahab khana khane ke baad pet me upar ki taraf bahut jalan hoti hai aur khatri dakar aati hai.\nDoctor: Kitne din se hai ye?\nPatient: 4-5 din se, subah khali pet zyada hota hai.\nDoctor: Acid reflux (GERD) lag raha hai. Yeh antacid aur capsule le lijiye, talahua cheez band kariye."
         };
 
-        const scenarioSelect = document.getElementById('scenarioSelect');
-        const dialogueInput = document.getElementById('dialogueInput');
-        const generateBtn = document.getElementById('generateBtn');
-        const startListeningBtn = document.getElementById('startListeningBtn');
-        const micStatus = document.getElementById('micStatus');
-        const listenBtnText = document.getElementById('listenBtnText');
+        const dialogueInput = document.getElementById("dialogueInput");
+        const scenarioSelect = document.getElementById("scenarioSelect");
+        const processBtn = document.getElementById("processBtn");
+        const prescriptionTimestamp = document.getElementById("prescriptionTimestamp");
+        const patientNameInput = document.getElementById("patientNameInput");
+        const patientAgeInput = document.getElementById("patientAgeInput");
+        const dispPatientName = document.getElementById("dispPatientName");
+        const dispPatientAge = document.getElementById("dispPatientAge");
 
-        // Handle Presets
-        scenarioSelect.addEventListener('change', (e) => {
-            const val = e.target.value;
-            if(scenarios[val]) {
-                dialogueInput.value = scenarios[val];
-                processConsultation();
+        // Tabs
+        const tabSoap = document.getElementById("tabSoap");
+        const tabIcd = document.getElementById("tabIcd");
+        const tabJson = document.getElementById("tabJson");
+        const contentSoap = document.getElementById("contentSoap");
+        const contentIcd = document.getElementById("contentIcd");
+        const contentJson = document.getElementById("contentJson");
+
+        // Outputs
+        const outChief = document.getElementById("outChief");
+        const outSubjective = document.getElementById("outSubjective");
+        const outObjective = document.getElementById("outObjective");
+        const outAssessment = document.getElementById("outAssessment");
+        const outPlan = document.getElementById("outPlan");
+        const icdListContainer = document.getElementById("icdListContainer");
+        const jsonOutput = document.getElementById("jsonOutput");
+
+        // Load default scenario
+        dialogueInput.value = scenarios["1"];
+
+        scenarioSelect.addEventListener("change", (e) => {
+            if (e.target.value !== "custom") {
+                dialogueInput.value = scenarios[e.target.value] || "";
             }
         });
 
-        // Continuous Web Speech API Implementation
-        let recognition;
+        dialogueInput.addEventListener("input", () => {
+            scenarioSelect.value = "custom";
+        });
+
+        patientNameInput.addEventListener("input", () => {
+            dispPatientName.innerText = patientNameInput.value.trim() || "Unknown Patient";
+        });
+        patientAgeInput.addEventListener("input", () => {
+            dispPatientAge.innerText = patientAgeInput.value.trim() || "--";
+        });
+
+        // Tab Switching styling helper
+        function switchTab(activeTab) {
+            [tabSoap, tabIcd, tabJson].forEach(t => {
+                t.className = "px-4 py-2 text-slate-500 hover:text-slate-800 focus:outline-none";
+            });
+            [contentSoap, contentIcd, contentJson].forEach(c => c.classList.add("hidden"));
+
+            if (activeTab === 'soap') {
+                tabSoap.className = "px-4 py-2 text-indigo-600 border-b-2 border-indigo-600 focus:outline-none font-semibold";
+                contentSoap.classList.remove("hidden");
+            } else if (activeTab === 'icd') {
+                tabIcd.className = "px-4 py-2 text-indigo-600 border-b-2 border-indigo-600 focus:outline-none font-semibold";
+                contentIcd.classList.remove("hidden");
+            } else if (activeTab === 'json') {
+                tabJson.className = "px-4 py-2 text-indigo-600 border-b-2 border-indigo-600 focus:outline-none font-semibold";
+                contentJson.classList.remove("hidden");
+            }
+        }
+
+        tabSoap.addEventListener("click", () => switchTab('soap'));
+        tabIcd.addEventListener("click", () => switchTab('icd'));
+        tabJson.addEventListener("click", () => switchTab('json'));
+
+        // Core Parsing & Enterprise Prescription Generation
+        processBtn.addEventListener("click", () => {
+            const rawText = dialogueInput.value.trim();
+            if (!rawText) {
+                alert("Please enter or paste consultation dialogue first.");
+                return;
+            }
+
+            processBtn.innerHTML = "⏳ Synthesizing Medical Record...";
+            processBtn.disabled = true;
+
+            const now = new Date();
+            const formattedDateString = now.toLocaleString('en-IN', { 
+                dateStyle: 'medium', 
+                timeStyle: 'short' 
+            });
+            prescriptionTimestamp.innerText = formattedDateString;
+
+            setTimeout(() => {
+                const lowerText = rawText.toLowerCase();
+                let mockResult = {
+                    chief_complaint: "General health screening & examination.",
+                    subjective: "Patient reports general malaise: \"" + rawText.slice(0, 80) + "...\"",
+                    objective: "General physical condition stable. Vitals within normal limits.",
+                    assessment: "General Medical Evaluation",
+                    plan: "1. Multivitamin supplementation OD\n2. Adequate oral fluid intake\n3. Return if symptoms worsen.",
+                    icd_10_codes: [
+                        {"code": "Z00.0", "description": "General adult medical examination"}
+                    ]
+                };
+
+                if (lowerText.includes("bukhar") || lowerText.includes("fever") || lowerText.includes("sar dard") || lowerText.includes("headache") || lowerText.includes("paracetamol")) {
+                    mockResult = {
+                        chief_complaint: "Acute pyrexia accompanied by generalized headache and fatigue.",
+                        subjective: "Patient presents with symptoms of high body temperature, frontal headache, and associated discomfort.",
+                        objective: "Temperature: 101.2°F, Blood Pressure: 130/85 mmHg, Pulse: 84 bpm. Conscious and oriented.",
+                        assessment: "Acute Febrile Illness / Viral Pyrexia",
+                        plan: "Rx:\n1. Tab. Paracetamol 650mg — 1 tab three times a day (TDS) post meals for 3 days.\n2. Tab. Pantoprazole 40mg — 1 tab once daily empty stomach in morning.\n3. Adequate hydration & bed rest advised.",
+                        icd_10_codes: [
+                            {"code": "R50.9", "description": "Fever, unspecified"},
+                            {"code": "R51", "description": "Headache"}
+                        ]
+                    };
+                } else if (lowerText.includes("khasi") || lowerText.includes("cough") || lowerText.includes("gale") || lowerText.includes("throat")) {
+                    mockResult = {
+                        chief_complaint: "Pharyngeal irritation and persistent nocturnal dry cough.",
+                        subjective: "Patient complains of sore throat and dry cough worsening during nighttime.",
+                        objective: "Pharynx congested. Bilateral lung fields clear to auscultation.",
+                        assessment: "Acute Upper Respiratory Tract Infection (URTI)",
+                        plan: "Rx:\n1. Antitussive Cough Syrup — 10ml twice daily (BD) for 5 days.\n2. Tab. Levocetirizine 5mg — 1 tab at bedtime for 3 days.\n3. Warm saline water gargles thrice daily.",
+                        icd_10_codes: [
+                            {"code": "J06.9", "description": "Acute upper respiratory infection, unspecified"},
+                            {"code": "R05", "description": "Cough"}
+                        ]
+                    };
+                } else if (lowerText.includes("pet") || lowerText.includes("jalan") || lowerText.includes("acid") || lowerText.includes("stomach") || lowerText.includes("kam")) {
+                    mockResult = {
+                        chief_complaint: "Epigastric burning sensation and frequent acid regurgitation.",
+                        subjective: "Patient reports upper abdominal burning post meals and general gastric distress.",
+                        objective: "Abdomen soft, non-tender on palpation. Normal bowel sounds present.",
+                        assessment: "Gastroesophageal Reflux Disease (GERD) / Dyspepsia",
+                        plan: "Rx:\n1. Cap. Pantoprazole 40mg — 1 cap once daily before breakfast.\n2. Antacid Gel (Sucralfate base) — 10ml three times daily post meals.\n3. Avoid spicy, oily, and fried food items.",
+                        icd_10_codes: [
+                            {"code": "K21.9", "description": "Gastro-esophageal reflux disease"},
+                            {"code": "R12", "description": "Heartburn"}
+                        ]
+                    };
+                }
+
+                // Render SOAP
+                outChief.innerText = mockResult.chief_complaint;
+                outSubjective.innerText = mockResult.subjective;
+                outObjective.innerText = mockResult.objective;
+                outAssessment.innerText = mockResult.assessment;
+                outPlan.innerText = mockResult.plan;
+
+                // Render ICD
+                icdListContainer.innerHTML = "";
+                mockResult.icd_10_codes.forEach(item => {
+                    const div = document.createElement("div");
+                    div.className = "flex items-center justify-between p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-xs";
+                    div.innerHTML = `<span class="font-mono font-bold text-indigo-700 bg-indigo-50 px-2 py-1 rounded">${item.code}</span><span class="text-slate-700 ml-2 flex-grow">${item.description}</span>`;
+                    icdListContainer.appendChild(div);
+                });
+
+                // Render JSON
+                jsonOutput.innerText = JSON.stringify({
+                    resourceType: "Composition",
+                    status: "final",
+                    date: now.toISOString(),
+                    subject: { 
+                        name: patientNameInput.value,
+                        age_sex: patientAgeInput.value 
+                    },
+                    section: [
+                        { title: "SOAP Note & Prescription", text: mockResult },
+                        { billing: mockResult.icd_10_codes }
+                    ]
+                }, null, 2);
+
+                processBtn.innerHTML = "⚡ Generate Professional Rx";
+                processBtn.disabled = false;
+            }, 400);
+        });
+
+        // Trigger initial load on startup
+        processBtn.click();
+
+        // --- Live Web Speech API Recording Implementation ---
+        const recordMicBtn = document.getElementById("recordMicBtn");
+        const micIcon = document.getElementById("micIcon");
+        const micBtnText = document.getElementById("micBtnText");
+        const recStatusLabel = document.getElementById("recStatusLabel");
+
+        let recognition = null;
         let isRecording = false;
 
         if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
@@ -180,142 +423,140 @@ Doctor: B.P. 130/85 hai, temperature 101.2 Fahrenheit. Paracetamol 650mg subah-s
             recognition = new SpeechRecognition();
             recognition.continuous = true;
             recognition.interimResults = true;
-            recognition.lang = 'hi-IN'; // Supports Hindi/English mix commonly spoken in UP
+            recognition.lang = 'hi-IN';
 
             recognition.onstart = () => {
                 isRecording = true;
-                micStatus.textContent = "Mic: Recording Live...";
-                micStatus.className = "text-xs font-medium text-rose-600 bg-rose-50 px-3 py-1 rounded-full animate-pulse";
-                listenBtnText.textContent = "⏹️ Stop Recording";
-                startListeningBtn.className = "bg-slate-800 hover:bg-slate-900 text-white font-medium px-4 py-2.5 rounded-xl text-sm shadow-sm flex items-center gap-2 transition-all";
+                micIcon.innerText = "⏹️";
+                micBtnText.innerText = "Stop Scribing";
+                recStatusLabel.innerText = "🔴 Ambient Recording Active...";
+                recordMicBtn.classList.remove("bg-rose-600", "hover:bg-rose-700");
+                recordMicBtn.classList.add("bg-slate-800", "hover:bg-slate-900", "animate-pulse");
             };
 
             recognition.onresult = (event) => {
-                let finalTranscript = '';
-                for (let i = event.resultIndex; i < event.results.length; ++i) {
-                    if (event.results[i].isFinal) {
-                        finalTranscript += event.results[i][0].transcript + ' ';
-                    }
+                let transcript = "";
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    transcript += event.results[i][0].transcript;
                 }
-                if (finalTranscript) {
-                    dialogueInput.value += (dialogueInput.value ? "\n" : "") + "Speaker: " + finalTranscript.trim();
-                }
+                dialogueInput.value = "Consultation Transcript: " + transcript;
+                scenarioSelect.value = "custom";
             };
 
             recognition.onerror = (event) => {
                 console.error("Speech recognition error", event.error);
-                stopRecordingState();
+                stopListeningState();
             };
 
             recognition.onend = () => {
-                if(isRecording) {
-                    try { recognition.start(); } catch(e) {}
-                } else {
-                    stopRecordingState();
-                }
+                stopListeningState();
+                processBtn.click();
             };
         }
 
-        function stopRecordingState() {
+        function stopListeningState() {
             isRecording = false;
-            micStatus.textContent = "Mic: Ready & Processed";
-            micStatus.className = "text-xs font-medium text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full";
-            listenBtnText.textContent = "🔴 Start Full Recording";
-            startListeningBtn.className = "bg-rose-600 hover:bg-rose-700 text-white font-medium px-4 py-2.5 rounded-xl text-sm shadow-sm flex items-center gap-2 transition-all";
-            processConsultation();
+            micIcon.innerText = "🔴";
+            micBtnText.innerText = "Start Listening";
+            recStatusLabel.innerText = "Ambient Voice Scribe";
+            recordMicBtn.classList.remove("bg-slate-800", "hover:bg-slate-900", "animate-pulse");
+            recordMicBtn.classList.add("bg-rose-600", "hover:bg-rose-700");
         }
 
-        startListeningBtn.addEventListener('click', () => {
-            if(!recognition) {
-                alert("Speech recognition is not supported in this browser. Please use Chrome or Edge.");
+        recordMicBtn.addEventListener("click", () => {
+            if (!recognition) {
+                alert("Speech recognition is not supported in this browser. Please use Google Chrome or Edge.");
                 return;
             }
-            if(isRecording) {
-                isRecording = false;
+
+            if (isRecording) {
                 recognition.stop();
-                stopRecordingState();
             } else {
                 try {
+                    scenarioSelect.value = "custom";
+                    dialogueInput.value = "Listening to consultation conversation...";
                     recognition.start();
-                } catch(e) {
-                    console.error(e);
+                } catch (err) {
+                    console.error(err);
                 }
             }
         });
 
-        // Communication-Driven Parsing Engine (Name, Age, Medications & SOAP)
-        function processConsultation() {
-            const text = dialogueInput.value;
-            let lowerText = text.toLowerCase();
+        // Export PDF Handler
+        document.getElementById("exportPdfBtn").addEventListener("click", () => {
+            window.print();
+        });
 
-            // 1. Extract Patient Name via pattern matching
-            let extractedName = "Ramesh Kumar";
-            const namePatterns = [
-                /naam\s+([a-zA-Z\s]+?)(?:\s+hai|\s+aur|,|\.|$)/i,
-                /my name is\s+([a-zA-Z\s]+?)(?:\s+and|,|\.|$)/i,
-                /naam\s+hai\s+([a-zA-Z\s]+)/i
-            ];
-            for (let pat of namePatterns) {
-                const match = text.match(pat);
-                if (match && match[1]) {
-                    let cleaned = match[1].trim().replace(/aur.*$/, '').trim();
-                    if(cleaned.length > 2 && cleaned.length < 25) {
-                        // Title case
-                        extractedName = cleaned.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-                        break;
-                    }
-                }
-            }
-            document.getElementById('dispName').textContent = extractedName;
+        document.getElementById("copyJsonBtn").addEventListener("click", () => {
+            navigator.clipboard.writeText(jsonOutput.innerText);
+            alert("FHIR JSON payload copied to clipboard!");
+        });
 
-            // 2. Extract Age & Sex via pattern matching
-            let extractedAge = "42 Yrs / Male";
-            const agePatterns = [
-                /(\d{1,2})\s*(?:saal|years|yr|yrs|age)/i,
-                /age\s*(?:is)?\s*(\d{1,2})/i,
-                /umar\s*(\d{1,2})/i
-            ];
-            for (let pat of agePatterns) {
-                const match = lowerText.match(pat);
-                if (match && match[1]) {
-                    extractedAge = match[1] + " Yrs / Male";
-                    break;
-                }
-            }
-            document.getElementById('dispAgeSex').textContent = extractedAge;
+        // --- Robust Text-To-Speech Implementation ---
+        let availableVoices = [];
 
-            // 3. Translate & Parse Medications into English Rx
-            let extractedRx = [];
-            
-            if(lowerText.includes('paracetamol')) {
-                extractedRx.push(`<div class="flex items-center gap-2 bg-white p-2.5 rounded-lg border border-emerald-100 shadow-sm"><span class="text-emerald-600 font-bold">1.</span><span><strong>Tab. Paracetamol 650mg</strong> — 1 tablet thrice daily after meals (x 3 days)</span></div>`);
+        function loadVoices() {
+            if ('speechSynthesis' in window) {
+                availableVoices = window.speechSynthesis.getVoices();
             }
-            if(lowerText.includes('pantocid') || lowerText.includes('razo')) {
-                extractedRx.push(`<div class="flex items-center gap-2 bg-white p-2.5 rounded-lg border border-emerald-100 shadow-sm"><span class="text-emerald-600 font-bold">2.</span><span><strong>Tab. Pantocid 40mg</strong> — 1 tablet empty stomach in the morning (x 5 days)</span></div>`);
-            }
-            if(lowerText.includes('injection') || lowerText.includes('lagwa')) {
-                extractedRx.push(`<div class="flex items-center gap-2 bg-white p-2.5 rounded-lg border border-emerald-100 shadow-sm"><span class="text-emerald-600 font-bold">3.</span><span><strong>Injectable Support</strong> — 2 supportive injections as advised by physician at clinic.</span></div>`);
-            }
-            if(lowerText.includes('montek') || lowerText.includes('azithromycin')) {
-                extractedRx.push(`<div class="flex items-center gap-2 bg-white p-2.5 rounded-lg border border-emerald-100 shadow-sm"><span class="text-emerald-600 font-bold">1.</span><span><strong>Tab. Azithromycin 500mg</strong> — 1 tablet daily once a day for 3 days</span></div>`);
-                extractedRx.push(`<div class="flex items-center gap-2 bg-white p-2.5 rounded-lg border border-emerald-100 shadow-sm"><span class="text-emerald-600 font-bold">2.</span><span><strong>Tab. Montek-LC</strong> — 1 tablet at bedtime</span></div>`);
-            }
-            if(lowerText.includes('sucramilt') || lowerText.includes('syrup')) {
-                extractedRx.push(`<div class="flex items-center gap-2 bg-white p-2.5 rounded-lg border border-emerald-100 shadow-sm"><span class="text-emerald-600 font-bold">1.</span><span><strong>Syrup Sucramilt</strong> — 2 teaspoons twice daily after meals</span></div>`);
-            }
-
-            if(extractedRx.length === 0) {
-                extractedRx.push(`<div class="flex items-center gap-2 bg-white p-2.5 rounded-lg border border-emerald-100 shadow-sm"><span class="text-emerald-600 font-bold">•</span><span>Symptomatic supportive medications and hydration as discussed during consultation.</span></div>`);
-            }
-
-            document.getElementById('outRx').innerHTML = extractedRx.join('');
-            
-            // Update Subjective field preview
-            const lines = text.split('\n');
-            document.getElementById('outSubjective').textContent = `Patient ${extractedName} reports symptoms: "${lines[1] || text}"`;
         }
 
-        generateBtn.addEventListener('click', processConsultation);
+        if ('speechSynthesis' in window) {
+            loadVoices();
+            window.speechSynthesis.onvoiceschanged = loadVoices;
+        }
+
+        document.getElementById("ttsBtn").addEventListener("click", () => {
+            const textToSpeak = dialogueInput.value.trim();
+            if (!textToSpeak) {
+                alert("Please enter text to listen.");
+                return;
+            }
+
+            if (!('speechSynthesis' in window)) {
+                alert("Text-to-speech is not supported on this browser.");
+                return;
+            }
+
+            window.speechSynthesis.cancel();
+
+            const utterance = new SpeechSynthesisUtterance(textToSpeak);
+
+            if (availableVoices.length === 0) {
+                availableVoices = window.speechSynthesis.getVoices();
+            }
+
+            let selectedVoice = availableVoices.find(v => v.lang.startsWith("hi") || v.lang.includes("hi_IN") || v.lang.includes("hi-IN")) 
+                             || availableVoices.find(v => v.lang.startsWith("en") || v.lang.includes("en_IN"))
+                             || availableVoices[0];
+
+            if (selectedVoice) {
+                utterance.voice = selectedVoice;
+                utterance.lang = selectedVoice.lang;
+            }
+
+            utterance.rate = 0.95;
+            utterance.pitch = 1.0;
+
+            const ttsBtn = document.getElementById("ttsBtn");
+            const originalText = ttsBtn.innerHTML;
+            ttsBtn.innerHTML = "🔊 Playing...";
+            ttsBtn.disabled = true;
+
+            utterance.onend = () => {
+                ttsBtn.innerHTML = originalText;
+                ttsBtn.disabled = false;
+            };
+
+            utterance.onerror = (e) => {
+                console.error("TTS Error:", e);
+                ttsBtn.innerHTML = originalText;
+                ttsBtn.disabled = false;
+            };
+
+            window.speechSynthesis.speak(utterance);
+        });
     </script>
 </body>
 </html>
+
