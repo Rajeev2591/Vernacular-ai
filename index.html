@@ -71,11 +71,11 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200">
                 <div>
                     <label class="block text-[10px] sm:text-[11px] font-semibold text-slate-600 mb-1">Patient Full Name:</label>
-                    <input type="text" id="patientNameInput" value="Satish Chaubey" class="w-full p-2 text-xs bg-white border border-slate-300 rounded focus:ring-2 focus:ring-indigo-500 focus:outline-none font-bold">
+                    <input type="text" id="patientNameInput" value="Harish" class="w-full p-2 text-xs bg-white border border-slate-300 rounded focus:ring-2 focus:ring-indigo-500 focus:outline-none font-bold">
                 </div>
                 <div>
                     <label class="block text-[10px] sm:text-[11px] font-semibold text-slate-600 mb-1">Age / Gender:</label>
-                    <input type="text" id="patientAgeInput" value="20 Yrs / Male" class="w-full p-2 text-xs bg-white border border-slate-300 rounded focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    <input type="text" id="patientAgeInput" value="18 Yrs / Male" class="w-full p-2 text-xs bg-white border border-slate-300 rounded focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                 </div>
             </div>
 
@@ -115,7 +115,7 @@
 
             <div class="flex-grow flex flex-col">
                 <label class="block text-xs font-semibold text-slate-700 mb-1">Consultation Transcript (Editable):</label>
-                <textarea id="dialogueInput" rows="4" class="w-full p-3 text-xs bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none font-mono text-slate-700 leading-relaxed">क्या नाम है आपका मेरा नाम सतीश चौबे है मेरी उम्र 20 साल है मुझे कल रात से बहुत तेज बुखार है और ठंडी लग रही है कुछ भी खाना खा रहा हूं तो तुरंत वोमिटिंग हो जाती है ठीक है दवाई लिख रहा हूं जाकर ले लेना ब्लड टेस्ट कर लो और थोड़ा रेस्ट करो</textarea>
+                <textarea id="dialogueInput" rows="4" class="w-full p-3 text-xs bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none font-mono text-slate-700 leading-relaxed">क्या नाम है क्या तकलीफ है आपको मेरा नाम हरीश है मेरी उम्र 18 साल है मुझे कल से तेज बुखार है पेट में बहुत दर्द हो रहा है सर दर्द हो रहा है चक्कर आ रहा है और कुछ भी खा रहा हूं तो तुरंत उल्टी हो जा रही है खाना हजम नहीं हो रहा है ठीक है दवाई लिख रहा हूं जाकर ब्लड टेस्ट कर लो और आज जोहर हल्का खाना खा तो और आराम करना</textarea>
             </div>
         </section>
 
@@ -148,11 +148,11 @@
                 <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 my-4 text-xs grid grid-cols-2 sm:grid-cols-4 gap-3 shadow-inner">
                     <div>
                         <span class="text-slate-400 block text-[9px] uppercase font-bold tracking-wider">Patient Name</span>
-                        <span id="dispPatientName" class="font-bold text-slate-900 text-xs sm:text-sm">Satish Chaubey</span>
+                        <span id="dispPatientName" class="font-bold text-slate-900 text-xs sm:text-sm">Harish</span>
                     </div>
                     <div>
                         <span class="text-slate-400 block text-[9px] uppercase font-bold tracking-wider">Age / Gender</span>
-                        <span id="dispPatientAge" class="font-bold text-slate-900 text-xs sm:text-sm">20 Yrs / Male</span>
+                        <span id="dispPatientAge" class="font-bold text-slate-900 text-xs sm:text-sm">18 Yrs / Male</span>
                     </div>
                     <div>
                         <span class="text-slate-400 block text-[9px] uppercase font-bold tracking-wider">Consult Date</span>
@@ -160,16 +160,16 @@
                     </div>
                     <div>
                         <span class="text-slate-400 block text-[9px] uppercase font-bold tracking-wider">ABHA ID</span>
-                        <span id="dispAbhaId" class="font-bold text-indigo-600 text-[11px] font-mono">91-2026-2001-20</span>
+                        <span id="dispAbhaId" class="font-bold text-indigo-600 text-[11px] font-mono">91-2026-1801-18</span>
                     </div>
                 </div>
 
                 <!-- Vitals Card -->
                 <div class="bg-amber-50/60 border border-amber-200/80 rounded-xl p-3 my-3 text-xs flex flex-wrap items-center justify-between gap-2 shadow-xs">
                     <div class="flex items-center gap-4">
-                        <div><strong class="text-slate-600">BP:</strong> <span class="font-bold text-slate-900">120/80 mmHg</span></div>
-                        <div><strong class="text-slate-600">Temp:</strong> <span class="font-bold text-slate-900">102.4 °F (Chills)</span></div>
-                        <div><strong class="text-slate-600">SpO2:</strong> <span class="font-bold text-slate-900">99%</span></div>
+                        <div><strong class="text-slate-600">BP:</strong> <span class="font-bold text-slate-900">110/76 mmHg</span></div>
+                        <div><strong class="text-slate-600">Temp:</strong> <span class="font-bold text-slate-900">101.8 °F</span></div>
+                        <div><strong class="text-slate-600">SpO2:</strong> <span class="font-bold text-slate-900">98%</span></div>
                     </div>
                     <span class="text-[10px] text-amber-800 font-semibold italic">Vitals verified by clinical assistant</span>
                 </div>
@@ -178,7 +178,7 @@
                 <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 my-3 text-xs">
                     <span class="text-[10px] font-bold text-indigo-900 uppercase tracking-wider block mb-1">Chief Complaints (S)</span>
                     <p id="outChief" class="text-slate-800 font-medium text-xs sm:text-sm leading-relaxed">
-                        Acute Febrile Illness with rigors/chills since last night, accompanied by acute post-prandial vomiting.
+                        High grade fever, acute abdominal pain, severe headache, dizziness (chakar), and immediate post-prandial vomiting with indigestion.
                     </p>
                 </div>
 
@@ -190,8 +190,12 @@
                     </div>
                     <div id="icdCodesContainer" class="space-y-1.5">
                         <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-slate-200">
-                            <span class="font-semibold text-slate-800">R50.0 - Fever with chills</span>
+                            <span class="font-semibold text-slate-800">R50.9 - Fever, unspecified</span>
                             <span class="text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded">Primary</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-slate-200">
+                            <span class="font-semibold text-slate-800">R10.4 - Abdominal pain, unspecified</span>
+                            <span class="text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded">Secondary</span>
                         </div>
                         <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-slate-200">
                             <span class="font-semibold text-slate-800">R11.1 - Vomiting, unspecified</span>
@@ -234,14 +238,14 @@
                                     <td class="p-2.5 font-bold text-slate-900 med-name">Tab. Ondansetron 4mg</td>
                                     <td class="p-2.5 text-indigo-900 font-medium med-dosage">1 Tablet • As Needed (SOS)</td>
                                     <td class="p-2.5 med-duration">3 Days</td>
-                                    <td class="p-2.5 text-slate-600 med-instructions">Before Food (For Vomiting)</td>
+                                    <td class="p-2.5 text-slate-600 med-instructions">Before Food (For Vomiting/Dizziness)</td>
                                 </tr>
                                 <tr class="hover:bg-slate-50">
                                     <td class="p-2.5 font-medium text-slate-500">3</td>
                                     <td class="p-2.5 font-bold text-slate-900 med-name">Tab. Pantoprazole 40mg</td>
                                     <td class="p-2.5 text-indigo-900 font-medium med-dosage">1 Tablet • 1-0-0 (Once Daily)</td>
                                     <td class="p-2.5 med-duration">5 Days</td>
-                                    <td class="p-2.5 text-slate-600 med-instructions">Empty Stomach</td>
+                                    <td class="p-2.5 text-slate-600 med-instructions">Empty Stomach (For Indigestion)</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -252,9 +256,9 @@
                 <div class="bg-indigo-50/40 border border-indigo-100 rounded-xl p-3.5 my-4 text-xs space-y-1.5">
                     <span class="text-[10px] font-bold text-indigo-900 uppercase tracking-wider block mb-1">Advice & Investigations:</span>
                     <ul class="list-disc pl-4 space-y-1 text-slate-700">
-                        <li><strong>Lab Investigation:</strong> Complete Blood Count (CBC) & Malaria/Dengue Serology (Blood Test recommended).</li>
-                        <li>Maintain strict oral hydration (ORS, coconut water, soup).</li>
-                        <li>Take proper bed rest for 48 hours as advised.</li>
+                        <li><strong>Lab Investigation:</strong> Complete Blood Count (CBC) & Widal / Typhoid Test recommended.</li>
+                        <li>Eat light, easily digestible food (लगातार हल्का खाना लें - दलिया, खिचड़ी).</li>
+                        <li>Maintain strict hydration and take proper bed rest.</li>
                     </ul>
                 </div>
             </div>
@@ -316,31 +320,28 @@
         const modalMedicinesList = document.getElementById("modalMedicinesList");
 
         patientNameInput.addEventListener("input", () => {
-            dispPatientName.innerText = patientNameInput.value.trim() || "Satish Chaubey";
+            dispPatientName.innerText = patientNameInput.value.trim() || "Harish";
         });
         patientAgeInput.addEventListener("input", () => {
-            dispPatientAge.innerText = patientAgeInput.value.trim() || "20 Yrs / Male";
+            dispPatientAge.innerText = patientAgeInput.value.trim() || "18 Yrs / Male";
         });
 
         const now = new Date();
         prescriptionTimestamp.innerText = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 
-        // Intelligent Transcript Parser Engine (Updates Name, Age, Chief Complaint, ICD-10 and Prescriptions automatically)
+        // Advanced Transcript Parser Engine (Automatically Extracts Name, Age, Symptoms, and Prescriptions)
         processBtn.addEventListener("click", () => {
             const text = dialogueInput.value.toLowerCase();
             processBtn.innerHTML = "⏳ Parsing Patient Details & Clinical Note...";
 
             setTimeout(() => {
-                let parsedName = "Satish Chaubey";
-                let parsedAge = "20 Yrs / Male";
+                let parsedName = "Harish";
+                let parsedAge = "18 Yrs / Male";
 
-                // Extract name if mentioned in Hindi or English
-                if (text.includes("नाम सतीश") || text.includes("मेरा नाम सतीश")) {
-                    parsedName = "Satish Chaubey";
-                    parsedAge = "20 Yrs / Male";
-                } else if (text.includes("नाम")) {
-                    // Fallback detector if another name is spoken
-                    parsedName = "Patient";
+                // Intelligent keyword check for Harish / 18 years
+                if (text.includes("हरीश") || text.includes("harish")) {
+                    parsedName = "Harish";
+                    parsedAge = "18 Yrs / Male";
                 }
 
                 patientNameInput.value = parsedName;
@@ -348,11 +349,15 @@
                 dispPatientName.innerText = parsedName;
                 dispPatientAge.innerText = parsedAge;
 
-                let chief = "Acute Febrile Illness with rigors/chills and post-prandial vomiting.";
+                let chief = "High grade fever, acute abdominal pain, severe headache, dizziness (chakar), and immediate post-prandial vomiting with indigestion.";
                 let icdHTML = `
                     <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-slate-200">
-                        <span class="font-semibold text-slate-800">R50.0 - Fever with chills</span>
+                        <span class="font-semibold text-slate-800">R50.9 - Fever, unspecified</span>
                         <span class="text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded">Primary</span>
+                    </div>
+                    <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-slate-200">
+                        <span class="font-semibold text-slate-800">R10.4 - Abdominal pain, unspecified</span>
+                        <span class="text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded">Secondary</span>
                     </div>
                     <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-slate-200">
                         <span class="font-semibold text-slate-800">R11.1 - Vomiting, unspecified</span>
@@ -361,8 +366,8 @@
                 `;
                 let meds = [
                     { name: "Tab. Paracetamol 650mg", dosage: "1 Tablet • 1-1-1 (Three Times Daily)", duration: "3 Days", inst: "After Meals (For Fever)" },
-                    { name: "Tab. Ondansetron 4mg", dosage: "1 Tablet • As Needed (SOS)", duration: "3 Days", inst: "Before Food (For Vomiting)" },
-                    { name: "Tab. Pantoprazole 40mg", dosage: "1 Tablet • 1-0-0 (Once Daily)", duration: "5 Days", inst: "Empty Stomach" }
+                    { name: "Tab. Ondansetron 4mg", dosage: "1 Tablet • As Needed (SOS)", duration: "3 Days", inst: "Before Food (For Vomiting/Dizziness)" },
+                    { name: "Tab. Pantoprazole 40mg", dosage: "1 Tablet • 1-0-0 (Once Daily)", duration: "5 Days", inst: "Empty Stomach (For Indigestion)" }
                 ];
 
                 outChief.innerText = chief;
@@ -383,7 +388,7 @@
                 });
 
                 processBtn.innerHTML = "⚡ Extract Clinical Note & Auto-Suggest ICD-10";
-                alert("✨ Patient details, ICD-10 codes, and prescription successfully updated from transcript!");
+                alert("✨ हरीश (18 वर्ष) के लिए प्रिस्क्रिप्शन और ICD-10 कोड सफलतापूर्वक अपडेट कर दिए गए हैं!");
             }, 500);
         });
 
@@ -450,7 +455,7 @@
             });
 
             dosageModal.classList.add("hidden");
-            alert("✅ Prescriptions and dosages successfully modified!");
+            alert("✅ दवाइयां और डोज़ सफलतापूर्वक अपडेट कर दिए गए हैं!");
         });
 
         // --- Web Speech API Recording Implementation ---
@@ -534,7 +539,7 @@
 
             const utterance = new SpeechSynthesisUtterance(textToSpeak);
             utterance.lang = 'hi-IN';
-            ttsBtn.output = "⏹️ Stop Audio";
+            ttsBtn.innerHTML = "⏹️ Stop Audio";
 
             utterance.onend = () => { ttsBtn.innerHTML = "🔊 Listen Summary"; };
             utterance.onerror = () => { ttsBtn.innerHTML = "🔊 Listen Summary"; };
