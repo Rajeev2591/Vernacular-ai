@@ -247,8 +247,8 @@ let sessionFinalTranscript = "";
 if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     recognition = new SpeechRecognition();
-    recognition.continuous = true;       // Prevents mobile from shutting down after 2 seconds
-    recognition.interimResults = true;   // Allows live speech feedback
+    recognition.continuous = true;       
+    recognition.interimResults = true;   
     recognition.lang = 'hi-IN';
 
     recognition.onstart = () => {
@@ -320,7 +320,7 @@ recordMicBtn.addEventListener("click", () => {
     } else {
         manualStop = false;
         
-        // Wipe out textarea and memory buffer immediately when starting a fresh session
+        // Clean wipe for fresh session transcript
         dialogueInput.value = "";
         sessionFinalTranscript = "";
 
