@@ -28,7 +28,7 @@ patientAgeInput.addEventListener("input", () => {
 const now = new Date();
 prescriptionTimestamp.innerText = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 
-// --- Enhanced Clinical Guidelines & Auto-Suggestion Mapping Engine ---
+// --- Clinical Guidelines & Auto-Suggestion Mapping Engine ---
 processBtn.addEventListener("click", () => {
     const rawText = dialogueInput.value.trim();
     const text = rawText.toLowerCase();
@@ -233,7 +233,7 @@ saveMedicinesBtn.addEventListener("click", () => {
     alert("✅ दवाइयां और डोज़ सफलतापूर्वक अपडेट कर दिए गए हैं!");
 });
 
-// --- Resilient Mobile-First Speech Recognition Engine ---
+// --- Hardened Mobile-First Speech Recognition Engine with Audio Priming ---
 const recordMicBtn = document.getElementById("recordMicBtn");
 const micIcon = document.getElementById("micIcon");
 const micBtnText = document.getElementById("micBtnText");
@@ -242,14 +242,14 @@ const recStatusLabel = document.getElementById("recStatusLabel");
 let recognition = null;
 let isRecording = false;
 
-const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
 if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     recognition = new SpeechRecognition();
     
-    // Disabling continuous mode on mobile stops the 2-second timeout crash loop
-    recognition.continuous = !isMobile; 
+    // On mobile, keeping continuous false prevents webkit silence timeouts
+    recognition.continuous = false; 
     recognition.interimResults = true;   
     recognition.lang = 'hi-IN';
 
@@ -272,6 +272,10 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
 
     recognition.onerror = (event) => {
         console.warn("Speech recognition error:", event.error);
+        // If mobile throws a 'no-speech' or 'aborted' error right away, don't crash silently
+        if (event.error === 'no-speech' && isMobile) {
+            recStatusLabel.innerText = "⚠️ No speech detected. Tap to retry.";
+        }
     };
 
     recognition.onend = () => {
@@ -284,13 +288,29 @@ function stopListeningState() {
     micIcon.innerText = "🔴";
     micBtnText.innerText = "Start Listening";
     recStatusLabel.innerText = "Ambient Voice Scribe";
-    recordMicBtn.classList.remove("bg-slate-800", "hover:bg-slate-900", "animate-pulse");
+    recordMicBtn.classList.remove("bg-rose-600", "hover:bg-rose-700");
     recordMicBtn.classList.add("bg-rose-600", "hover:bg-rose-700");
 }
 
-recordMicBtn.addEventListener("click", () => {
+// Mobile Audio Context Priming to prevent premature WebKit audio session drops
+async function primeMobileAudio() {
+    if (!isMobile) return;
+    try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') {
+            await audioCtx.resume();
+        }
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        // Immediately release the raw stream so recognition engine can take over
+        stream.getTracks().forEach(track => track.stop());
+    } catch (e) {
+        console.log("Audio priming skipped or blocked:", e);
+    }
+}
+
+recordMicBtn.addEventListener("click", async () => {
     if (!recognition) {
-        alert("Speech recognition is not supported in this browser. Please use Google Chrome or Edge over HTTPS.");
+        alert("Speech recognition is not supported in this browser. Please use Google Chrome or Safari over HTTPS.");
         return;
     }
 
@@ -298,8 +318,11 @@ recordMicBtn.addEventListener("click", () => {
         isRecording = false;
         recognition.stop();
     } else {
-        // Hard wipe input box on every fresh start to eliminate lingering previous transcripts
+        // Clear prior text completely before starting fresh session
         dialogueInput.value = "";
+
+        // Prime audio channel for mobile webkit before starting recognition
+        await primeMobileAudio();
 
         try { 
             recognition.start(); 
