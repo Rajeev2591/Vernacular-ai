@@ -28,7 +28,7 @@ patientAgeInput.addEventListener("input", () => {
 const now = new Date();
 prescriptionTimestamp.innerText = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 
-// --- Clinical Guidelines & Auto-Suggestion Mapping Engine ---
+// --- Enhanced Clinical Guidelines & Auto-Suggestion Mapping Engine ---
 processBtn.addEventListener("click", () => {
     const rawText = dialogueInput.value.trim();
     const text = rawText.toLowerCase();
@@ -233,7 +233,7 @@ saveMedicinesBtn.addEventListener("click", () => {
     alert("✅ दवाइयां और डोज़ सफलतापूर्वक अपडेट कर दिए गए हैं!");
 });
 
-// --- Synchronous Mobile-Safe Speech Recognition Engine ---
+// --- Android-Resilient Speech Recognition Engine with Auto-Recovery ---
 const recordMicBtn = document.getElementById("recordMicBtn");
 const micIcon = document.getElementById("micIcon");
 const micBtnText = document.getElementById("micBtnText");
@@ -241,46 +241,68 @@ const recStatusLabel = document.getElementById("recStatusLabel");
 
 let recognition = null;
 let isRecording = false;
-
-const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+let userRequestedStop = false;
+let sessionTranscript = "";
 
 if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     recognition = new SpeechRecognition();
     
-    // Explicitly set continuous to false on mobile to prevent WebKit timeout crashes
-    recognition.continuous = !isMobile; 
+    recognition.continuous = true;       
     recognition.interimResults = true;   
     recognition.lang = 'hi-IN';
 
     recognition.onstart = () => {
         isRecording = true;
         micIcon.innerText = "⏹️";
-        micBtnText.innerText = isMobile ? "Listening... (Tap to Stop)" : "Stop Scribing";
+        micBtnText.innerText = "Stop Scribing";
         recStatusLabel.innerText = "🔴 Ambient Recording Active...";
         recordMicBtn.classList.remove("bg-rose-600", "hover:bg-rose-700");
         recordMicBtn.classList.add("bg-slate-800", "hover:bg-slate-900", "animate-pulse");
     };
 
     recognition.onresult = (event) => {
-        let transcript = "";
-        for (let i = 0; i < event.results.length; ++i) {
-            transcript += event.results[i][0].transcript + " ";
+        let interim = "";
+        let finalChunk = "";
+
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+            const chunk = event.results[i][0].transcript;
+            if (event.results[i].isFinal) {
+                finalChunk += chunk + " ";
+            } else {
+                interim += chunk;
+            }
         }
-        dialogueInput.value = transcript.trim();
+
+        if (finalChunk) {
+            sessionTranscript += finalChunk;
+        }
+
+        dialogueInput.value = (sessionTranscript + interim).trim();
     };
 
     recognition.onerror = (event) => {
-        console.warn("Speech recognition error:", event.error);
+        console.warn("Speech recognition warning:", event.error);
     };
 
     recognition.onend = () => {
+        // ANDROID FIX: If Android Chrome stops the microphone due to 2s silence, 
+        // instantly restart the stream unless the user manually clicked stop!
+        if (!userRequestedStop && isRecording) {
+            try {
+                recognition.start();
+                return;
+            } catch (err) {
+                console.log("Auto-restart prevented:", err);
+            }
+        }
         stopListeningState();
     };
 }
 
 function stopListeningState() {
     isRecording = false;
+    userRequestedStop = false;
     micIcon.innerText = "🔴";
     micBtnText.innerText = "Start Listening";
     recStatusLabel.innerText = "Ambient Voice Scribe";
@@ -288,25 +310,25 @@ function stopListeningState() {
     recordMicBtn.classList.add("bg-rose-600", "hover:bg-rose-700");
 }
 
-// Completely synchronous click event to comply with mobile Safari/Chrome gesture security
 recordMicBtn.addEventListener("click", () => {
     if (!recognition) {
-        alert("Speech recognition is not supported in this browser. Please use Google Chrome or Safari over HTTPS.");
+        alert("Speech recognition is not supported in this browser. Please use Google Chrome on Android.");
         return;
     }
 
     if (isRecording) {
+        userRequestedStop = true;
         isRecording = false;
         recognition.stop();
     } else {
-        // Hard wipe input box immediately on click
+        userRequestedStop = false;
         dialogueInput.value = "";
+        sessionTranscript = "";
 
         try { 
-            // Must be called synchronously within the user tap event handler
             recognition.start(); 
         } catch (err) { 
-            console.error("Recognition start blocked:", err); 
+            console.error("Failed to start recognition:", err); 
             stopListeningState();
         }
     }
