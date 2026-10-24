@@ -233,7 +233,7 @@ saveMedicinesBtn.addEventListener("click", () => {
     alert("✅ दवाइयां और डोज़ सफलतापूर्वक अपडेट कर दिए गए हैं!");
 });
 
-// --- Hardened Mobile-First Speech Recognition Engine with Audio Priming ---
+// --- Synchronous Mobile-Safe Speech Recognition Engine ---
 const recordMicBtn = document.getElementById("recordMicBtn");
 const micIcon = document.getElementById("micIcon");
 const micBtnText = document.getElementById("micBtnText");
@@ -248,8 +248,8 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     recognition = new SpeechRecognition();
     
-    // On mobile, keeping continuous false prevents webkit silence timeouts
-    recognition.continuous = false; 
+    // Explicitly set continuous to false on mobile to prevent WebKit timeout crashes
+    recognition.continuous = !isMobile; 
     recognition.interimResults = true;   
     recognition.lang = 'hi-IN';
 
@@ -272,10 +272,6 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
 
     recognition.onerror = (event) => {
         console.warn("Speech recognition error:", event.error);
-        // If mobile throws a 'no-speech' or 'aborted' error right away, don't crash silently
-        if (event.error === 'no-speech' && isMobile) {
-            recStatusLabel.innerText = "⚠️ No speech detected. Tap to retry.";
-        }
     };
 
     recognition.onend = () => {
@@ -288,27 +284,12 @@ function stopListeningState() {
     micIcon.innerText = "🔴";
     micBtnText.innerText = "Start Listening";
     recStatusLabel.innerText = "Ambient Voice Scribe";
-    recordMicBtn.classList.remove("bg-rose-600", "hover:bg-rose-700");
+    recordMicBtn.classList.remove("bg-slate-800", "hover:bg-slate-900", "animate-pulse");
     recordMicBtn.classList.add("bg-rose-600", "hover:bg-rose-700");
 }
 
-// Mobile Audio Context Priming to prevent premature WebKit audio session drops
-async function primeMobileAudio() {
-    if (!isMobile) return;
-    try {
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        if (audioCtx.state === 'suspended') {
-            await audioCtx.resume();
-        }
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        // Immediately release the raw stream so recognition engine can take over
-        stream.getTracks().forEach(track => track.stop());
-    } catch (e) {
-        console.log("Audio priming skipped or blocked:", e);
-    }
-}
-
-recordMicBtn.addEventListener("click", async () => {
+// Completely synchronous click event to comply with mobile Safari/Chrome gesture security
+recordMicBtn.addEventListener("click", () => {
     if (!recognition) {
         alert("Speech recognition is not supported in this browser. Please use Google Chrome or Safari over HTTPS.");
         return;
@@ -318,13 +299,11 @@ recordMicBtn.addEventListener("click", async () => {
         isRecording = false;
         recognition.stop();
     } else {
-        // Clear prior text completely before starting fresh session
+        // Hard wipe input box immediately on click
         dialogueInput.value = "";
 
-        // Prime audio channel for mobile webkit before starting recognition
-        await primeMobileAudio();
-
         try { 
+            // Must be called synchronously within the user tap event handler
             recognition.start(); 
         } catch (err) { 
             console.error("Recognition start blocked:", err); 
