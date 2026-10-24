@@ -39,9 +39,9 @@
 
     <!-- Enterprise Header -->
     <header class="bg-slate-900 text-white shadow-md py-3 px-4 sm:px-6 no-print border-b border-slate-800">
-        <div class="max-w-4xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2 text-center sm:text-left">
+        <div class="max-w-4xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3 text-center sm:text-left">
             <div class="flex items-center justify-center sm:justify-start gap-3">
-                <div class="bg-indigo-600 p-2 rounded-lg text-white font-bold text-base sm:text-lg shadow">⚕️</div>
+                <div class="bg-indigo-600 p-2.5 rounded-xl text-white font-bold text-base sm:text-lg shadow">⚕️</div>
                 <div>
                     <h1 class="text-sm sm:text-base md:text-lg font-bold tracking-wide text-white">NIDAN PRO <span class="text-[10px] sm:text-xs font-normal text-indigo-400 bg-indigo-950 px-2 py-0.5 rounded border border-indigo-800 ml-1 sm:ml-2">Enterprise Edition</span></h1>
                     <p class="text-[10px] sm:text-xs text-slate-400">AI-Powered Vernacular Medical Scribe & Practice Management</p>
@@ -60,79 +60,80 @@
     <main class="max-w-4xl mx-auto p-3 sm:p-5 lg:p-6 flex-grow flex flex-col gap-5 w-full">
         
         <!-- Controls & Interactive Scribe Panel (No Print) -->
-        <section class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col gap-3 no-print">
-            <div class="flex items-center justify-between border-b pb-2 sm:pb-3">
+        <section class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col gap-4 no-print">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b pb-3 gap-2">
                 <h2 class="text-sm sm:text-base font-semibold text-slate-900 flex items-center gap-2">
                     <span>🎙️</span> Live Consultation Input & Actions
                 </h2>
-                <span class="text-[10px] sm:text-[11px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded">Hindi / English Scribe</span>
+                <span class="text-[10px] sm:text-[11px] text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full">Hindi / English Scribe</span>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200">
+            <!-- Patient Metadata Inputs -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-slate-50 p-3.5 rounded-xl border border-slate-200">
                 <div>
                     <label class="block text-[10px] sm:text-[11px] font-semibold text-slate-600 mb-1">Patient Full Name:</label>
-                    <input type="text" id="patientNameInput" value="Harish" class="w-full p-2 text-xs bg-white border border-slate-300 rounded focus:ring-2 focus:ring-indigo-500 focus:outline-none font-bold">
+                    <input type="text" id="patientNameInput" value="Harish" class="w-full p-2.5 text-xs bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none font-bold text-slate-900">
                 </div>
                 <div>
                     <label class="block text-[10px] sm:text-[11px] font-semibold text-slate-600 mb-1">Age / Gender:</label>
-                    <input type="text" id="patientAgeInput" value="18 Yrs / Male" class="w-full p-2 text-xs bg-white border border-slate-300 rounded focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    <input type="text" id="patientAgeInput" value="18 Yrs / Male" class="w-full p-2.5 text-xs bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none text-slate-800">
                 </div>
             </div>
 
             <!-- Live Voice Recording & TTS Audio Toolbar -->
-            <div class="bg-gradient-to-r from-indigo-50 to-slate-50 border border-indigo-100 rounded-xl p-3 flex flex-col sm:flex-row items-center justify-between gap-2 shadow-xs">
+            <div class="bg-gradient-to-r from-indigo-50 to-slate-50 border border-indigo-100 rounded-xl p-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
                 <div>
                     <span class="text-xs font-bold text-indigo-950 block" id="recStatusLabel">Ambient Voice Scribe</span>
                     <span class="text-[10px] text-slate-500">Record conversation or listen to summary</span>
                 </div>
-                <div class="flex gap-2 w-full sm:w-auto">
-                    <button id="recordMicBtn" class="flex-1 sm:flex-none bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5 shadow-sm">
+                <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                    <button id="recordMicBtn" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 shadow-sm w-full sm:w-auto">
                         <span id="micIcon">🔴</span> <span id="micBtnText">Start Listening</span>
                     </button>
-                    <button id="ttsBtn" class="flex-1 sm:flex-none bg-white hover:bg-slate-100 text-slate-700 text-xs font-semibold px-3.5 py-2 rounded-lg border border-slate-300 transition shadow-xs flex items-center justify-center gap-1.5">
+                    <button id="ttsBtn" class="bg-white hover:bg-slate-100 text-slate-700 text-xs font-semibold px-4 py-2.5 rounded-xl border border-slate-300 transition shadow-xs flex items-center justify-center gap-1.5 w-full sm:w-auto">
                         🔊 Listen Summary
                     </button>
                 </div>
             </div>
 
             <!-- Quick Action Buttons -->
-            <div class="flex flex-col gap-2">
-                <div class="flex items-center gap-2">
+            <div class="flex flex-col gap-2.5">
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                     <span class="text-xs font-bold text-slate-600">QUICK ACTIONS:</span>
-                    <button id="verifyDosagesBtn" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-3 rounded-xl text-xs transition shadow-sm flex items-center justify-center gap-1.5">
+                    <button id="verifyDosagesBtn" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-3 rounded-xl text-xs transition shadow-sm flex items-center justify-center gap-1.5">
                         <span>💊 Verify & Confirm Dosages (Modify)</span>
                     </button>
                 </div>
-                <div class="flex flex-col sm:flex-row gap-2">
-                    <button id="processBtn" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 px-4 rounded-xl text-xs transition shadow-sm flex items-center justify-center gap-2">
+                <div class="flex flex-col sm:flex-row gap-2.5">
+                    <button id="processBtn" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-xl text-xs transition shadow-sm flex items-center justify-center gap-2">
                         <span>⚡ Extract Clinical Note & Auto-Suggest ICD-10</span>
                     </button>
-                    <button id="exportPdfBtn" class="bg-indigo-900 hover:bg-indigo-950 text-white font-semibold py-2.5 px-4 rounded-xl text-xs transition shadow-sm flex items-center justify-center gap-2">
+                    <button id="exportPdfBtn" class="bg-indigo-900 hover:bg-indigo-950 text-white font-semibold py-3 px-4 rounded-xl text-xs transition shadow-sm flex items-center justify-center gap-2">
                         <span>🖨️ Print / Save PDF Prescription</span>
                     </button>
                 </div>
             </div>
 
-            <div class="flex-grow flex flex-col">
+            <div class="flex flex-col">
                 <label class="block text-xs font-semibold text-slate-700 mb-1">Consultation Transcript (Editable):</label>
                 <textarea id="dialogueInput" rows="4" class="w-full p-3 text-xs bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none font-mono text-slate-700 leading-relaxed">क्या नाम है क्या तकलीफ है आपको मेरा नाम हरीश है मेरी उम्र 18 साल है मुझे कल से तेज बुखार है पेट में बहुत दर्द हो रहा है सर दर्द हो रहा है चक्कर आ रहा है और कुछ भी खा रहा हूं तो तुरंत उल्टी हो जा रही है खाना हजम नहीं हो रहा है ठीक है दवाई लिख रहा हूं जाकर ब्लड टेस्ट कर लो और आज जोहर हल्का खाना खा तो और आराम करना</textarea>
             </div>
         </section>
 
         <!-- Right / Main Printable E-Prescription Card -->
-        <section id="printablePrescription" class="bg-white p-6 sm:p-8 rounded-2xl shadow-md border border-slate-200 flex flex-col justify-between relative min-h-[750px]">
+        <section id="printablePrescription" class="bg-white p-4 sm:p-8 rounded-2xl shadow-md border border-slate-200 flex flex-col justify-between relative min-h-[750px] overflow-hidden">
             <div>
                 <!-- Institutional Letterhead Header with QR Code -->
                 <div class="border-b-2 border-indigo-900 pb-4 flex flex-col sm:flex-row justify-between items-start gap-4">
                     <div>
-                        <h2 class="text-lg sm:text-xl font-black tracking-tight text-indigo-950">DR. ANAND SHARMA, M.D.</h2>
+                        <h2 class="text-base sm:text-xl font-black tracking-tight text-indigo-950">DR. ANAND SHARMA, M.D.</h2>
                         <p class="text-xs text-slate-700 font-bold mt-0.5">Senior Consultant Physician • Reg. No: UP-48291</p>
                         <p class="text-[11px] text-slate-500 mt-1">NIDAN Healthcare Clinic, Assi Ghat Road, Varanasi (U.P.)</p>
                         <p class="text-[10px] text-slate-400 mt-0.5">Phone: +91 98390 12345 • Timing: 09:00 AM - 02:00 PM</p>
                     </div>
                     <!-- ABDM-M3-Synced QR Code Badge -->
-                    <div class="flex items-center gap-3 bg-slate-50 border border-slate-200 p-2.5 rounded-xl shadow-xs">
-                        <div class="w-14 h-14 bg-white p-1 border border-slate-200 flex items-center justify-center rounded">
+                    <div class="flex items-center gap-3 bg-slate-50 border border-slate-200 p-2.5 rounded-xl shadow-xs self-stretch sm:self-auto justify-center sm:justify-start">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 bg-white p-1 border border-slate-200 flex items-center justify-center rounded">
                             <svg viewBox="0 0 24 24" class="w-full h-full text-indigo-950 fill-current">
                                 <path d="M2,2H10V10H2V2M4,4V8H8V4H4M14,2H22V10H14V2M16,4V8H20V4H16M2,14H10V22H2V14M4,16V20H8V16H4M18,14V18H22V14H18M14,18V22H16V18H14M20,18V22H22V18H20M12,2H14V6H12V2M12,8H14V12H12V8M12,14H14V18H12V14M12,20H14V22H12V20M6,12H8V14H6V12M16,12H18V14H16V12Z"/>
                             </svg>
@@ -166,12 +167,12 @@
 
                 <!-- Vitals Card -->
                 <div class="bg-amber-50/60 border border-amber-200/80 rounded-xl p-3 my-3 text-xs flex flex-wrap items-center justify-between gap-2 shadow-xs">
-                    <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-3 sm:gap-4 flex-wrap">
                         <div><strong class="text-slate-600">BP:</strong> <span class="font-bold text-slate-900">110/76 mmHg</span></div>
                         <div><strong class="text-slate-600">Temp:</strong> <span class="font-bold text-slate-900">101.8 °F</span></div>
                         <div><strong class="text-slate-600">SpO2:</strong> <span class="font-bold text-slate-900">98%</span></div>
                     </div>
-                    <span class="text-[10px] text-amber-800 font-semibold italic">Vitals verified by clinical assistant</span>
+                    <span class="text-[10px] text-amber-800 font-semibold italic">Vitals verified by assistant</span>
                 </div>
 
                 <!-- Chief Complaints Section -->
@@ -204,18 +205,18 @@
                     </div>
                 </div>
 
-                <!-- Medications & Dosage Plan (Rx Table) -->
+                <!-- Medications & Dosage Plan (Rx Table - Responsive scroll wrapper) -->
                 <div class="my-4">
                     <div class="flex justify-between items-end mb-2">
                         <div class="flex items-center gap-2">
                             <span class="text-xl font-serif font-black italic text-indigo-950">Rx</span>
                             <h3 class="text-xs sm:text-sm font-bold text-slate-900 uppercase tracking-wide">Medications & Dosage Plan</h3>
                         </div>
-                        <span class="text-[10px] text-slate-500 font-medium">All oral drugs after food unless noted</span>
+                        <span class="text-[10px] text-slate-500 font-medium hidden sm:inline">All oral drugs after food unless noted</span>
                     </div>
 
-                    <div class="border border-slate-200 rounded-xl overflow-hidden">
-                        <table class="w-full text-left border-collapse text-xs">
+                    <div class="border border-slate-200 rounded-xl overflow-x-auto shadow-xs">
+                        <table class="w-full text-left border-collapse text-xs min-w-[550px]">
                             <thead>
                                 <tr class="bg-slate-100 text-slate-700 text-[10px] uppercase font-bold tracking-wider border-b border-slate-200">
                                     <th class="p-2.5 w-8">#</th>
@@ -280,20 +281,20 @@
 
     <!-- Interactive Dosage Modification Modal -->
     <div id="dosageModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 hidden no-print p-4">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-6 flex flex-col gap-4 border border-slate-200">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-4 sm:p-6 flex flex-col gap-4 border border-slate-200 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center border-b pb-3">
-                <h3 class="text-base font-bold text-indigo-950 flex items-center gap-2">
+                <h3 class="text-sm sm:text-base font-bold text-indigo-950 flex items-center gap-2">
                     <span>💊</span> Verify & Modify Prescription Medications
                 </h3>
-                <button id="closeModalBtn" class="text-slate-400 hover:text-slate-700 font-bold text-lg">✕</button>
+                <button id="closeModalBtn" class="text-slate-400 hover:text-slate-700 font-bold text-lg p-1">✕</button>
             </div>
             <p class="text-xs text-slate-500">Review and update medicine names, dosages, durations, or instructions before confirming:</p>
             
-            <div id="modalMedicinesList" class="space-y-3 max-h-80 overflow-y-auto pr-1"></div>
+            <div id="modalMedicinesList" class="space-y-3 max-h-72 overflow-y-auto pr-1"></div>
 
-            <div class="flex justify-end gap-2 pt-3 border-t">
-                <button id="cancelModalBtn" class="px-4 py-2 text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition">Cancel</button>
-                <button id="saveMedicinesBtn" class="px-5 py-2 text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition shadow-sm">Save & Update Prescription</button>
+            <div class="flex flex-col sm:flex-row justify-end gap-2 pt-3 border-t">
+                <button id="cancelModalBtn" class="px-4 py-2.5 text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition">Cancel</button>
+                <button id="saveMedicinesBtn" class="px-5 py-2.5 text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition shadow-sm">Save & Update Prescription</button>
             </div>
         </div>
     </div>
@@ -310,6 +311,7 @@
         const outChief = document.getElementById("outChief");
         const icdCodesContainer = document.getElementById("icdCodesContainer");
         const prescriptionTableBody = document.getElementById("prescriptionTableBody");
+        const dispAbhaId = document.getElementById("dispAbhaId");
 
         // Modal Elements
         const verifyDosagesBtn = document.getElementById("verifyDosagesBtn");
@@ -320,60 +322,87 @@
         const modalMedicinesList = document.getElementById("modalMedicinesList");
 
         patientNameInput.addEventListener("input", () => {
-            dispPatientName.innerText = patientNameInput.value.trim() || "Harish";
+            dispPatientName.innerText = patientNameInput.value.trim() || "Patient Name";
         });
         patientAgeInput.addEventListener("input", () => {
-            dispPatientAge.innerText = patientAgeInput.value.trim() || "18 Yrs / Male";
+            dispPatientAge.innerText = patientAgeInput.value.trim() || "Age / Gender";
         });
 
         const now = new Date();
         prescriptionTimestamp.innerText = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 
-        // Advanced Transcript Parser Engine (Automatically Extracts Name, Age, Symptoms, and Prescriptions)
+        // Advanced Transcript Parser Engine (Automatically Clears State & Parses Details)
         processBtn.addEventListener("click", () => {
-            const text = dialogueInput.value.toLowerCase();
+            const rawText = dialogueInput.value.trim();
+            const text = rawText.toLowerCase();
+            
+            if (!rawText) {
+                alert("Please enter or record a consultation transcript first.");
+                return;
+            }
+
             processBtn.innerHTML = "⏳ Parsing Patient Details & Clinical Note...";
 
             setTimeout(() => {
-                let parsedName = "Harish";
-                let parsedAge = "18 Yrs / Male";
+                let parsedName = patientNameInput.value.trim() || "New Patient";
+                let parsedAge = patientAgeInput.value.trim() || "18 Yrs / Male";
 
-                // Intelligent keyword check for Harish / 18 years
-                if (text.includes("हरीश") || text.includes("harish")) {
-                    parsedName = "Harish";
-                    parsedAge = "18 Yrs / Male";
+                // Heuristic parsing for Hindi transcripts
+                const nameMatch = rawText.match(/मेरा नाम\s+([^\s]+)\s+है/i);
+                if (nameMatch && nameMatch[1]) {
+                    parsedName = nameMatch[1];
                 }
 
+                const ageMatch = rawText.match(/मेरी उम्र\s+([0-9]+\s*( साल|yrs?))/i);
+                if (ageMatch && ageMatch[1]) {
+                    parsedAge = ageMatch[1] + " / Male";
+                }
+
+                // Update Input Fields and Preview State
                 patientNameInput.value = parsedName;
                 patientAgeInput.value = parsedAge;
                 dispPatientName.innerText = parsedName;
                 dispPatientAge.innerText = parsedAge;
+                dispAbhaId.innerText = `91-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(10 + Math.random() * 90)}`;
 
-                let chief = "High grade fever, acute abdominal pain, severe headache, dizziness (chakar), and immediate post-prandial vomiting with indigestion.";
+                // Clear old prescription table rows before injecting new items
+                prescriptionTableBody.innerHTML = "";
+
+                let chief = "Fever, body ache, acute discomfort, and associated symptoms as per transcript notes.";
                 let icdHTML = `
                     <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-slate-200">
                         <span class="font-semibold text-slate-800">R50.9 - Fever, unspecified</span>
                         <span class="text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded">Primary</span>
                     </div>
-                    <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-slate-200">
-                        <span class="font-semibold text-slate-800">R10.4 - Abdominal pain, unspecified</span>
-                        <span class="text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded">Secondary</span>
-                    </div>
-                    <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-slate-200">
-                        <span class="font-semibold text-slate-800">R11.1 - Vomiting, unspecified</span>
-                        <span class="text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded">Secondary</span>
-                    </div>
                 `;
+
                 let meds = [
-                    { name: "Tab. Paracetamol 650mg", dosage: "1 Tablet • 1-1-1 (Three Times Daily)", duration: "3 Days", inst: "After Meals (For Fever)" },
-                    { name: "Tab. Ondansetron 4mg", dosage: "1 Tablet • As Needed (SOS)", duration: "3 Days", inst: "Before Food (For Vomiting/Dizziness)" },
-                    { name: "Tab. Pantoprazole 40mg", dosage: "1 Tablet • 1-0-0 (Once Daily)", duration: "5 Days", inst: "Empty Stomach (For Indigestion)" }
+                    { name: "Tab. Paracetamol 650mg", dosage: "1 Tablet • 1-1-1 (Three Times Daily)", duration: "3 Days", inst: "After Meals (For Fever)" }
                 ];
+
+                if (text.includes("उल्टी") || text.includes("vomit") || text.includes("चक्कर")) {
+                    meds.push({ name: "Tab. Ondansetron 4mg", dosage: "1 Tablet • As Needed (SOS)", duration: "3 Days", inst: "Before Food (For Vomiting/Dizziness)" });
+                    icdHTML += `
+                        <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-slate-200">
+                            <span class="font-semibold text-slate-800">R11.1 - Vomiting, unspecified</span>
+                            <span class="text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded">Secondary</span>
+                        </div>
+                    `;
+                }
+
+                if (text.includes("पेट में दर्द") || text.includes("gas") || text.includes("हजम")) {
+                    meds.push({ name: "Tab. Pantoprazole 40mg", dosage: "1 Tablet • 1-0-0 (Once Daily)", duration: "5 Days", inst: "Empty Stomach (For Indigestion)" });
+                    icdHTML += `
+                        <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-slate-200">
+                            <span class="font-semibold text-slate-800">R10.4 - Abdominal pain, unspecified</span>
+                            <span class="text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded">Secondary</span>
+                        </div>
+                    `;
+                }
 
                 outChief.innerText = chief;
                 icdCodesContainer.innerHTML = icdHTML;
 
-                prescriptionTableBody.innerHTML = "";
                 meds.forEach((m, idx) => {
                     const tr = document.createElement("tr");
                     tr.className = "hover:bg-slate-50";
@@ -388,7 +417,7 @@
                 });
 
                 processBtn.innerHTML = "⚡ Extract Clinical Note & Auto-Suggest ICD-10";
-                alert("✨ हरीश (18 वर्ष) के लिए प्रिस्क्रिप्शन और ICD-10 कोड सफलतापूर्वक अपडेट कर दिए गए हैं!");
+                alert(`✨ ${parsedName} (${parsedAge}) के लिए नया प्रिस्क्रिप्शन और ICD-10 कोड सफलतापूर्वक अपडेट कर दिए गए हैं!`);
             }, 500);
         });
 
