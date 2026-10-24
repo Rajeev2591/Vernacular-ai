@@ -72,11 +72,11 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-slate-50 p-3.5 rounded-xl border border-slate-200">
                 <div>
                     <label class="block text-[10px] sm:text-[11px] font-semibold text-slate-600 mb-1">Patient Full Name:</label>
-                    <input type="text" id="patientNameInput" value="Harish" class="w-full p-2.5 text-xs bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none font-bold text-slate-900">
+                    <input type="text" id="patientNameInput" value="Rajeev" class="w-full p-2.5 text-xs bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none font-bold text-slate-900">
                 </div>
                 <div>
                     <label class="block text-[10px] sm:text-[11px] font-semibold text-slate-600 mb-1">Age / Gender:</label>
-                    <input type="text" id="patientAgeInput" value="18 Yrs / Male" class="w-full p-2.5 text-xs bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none text-slate-800">
+                    <input type="text" id="patientAgeInput" value="28 Yrs / Male" class="w-full p-2.5 text-xs bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none text-slate-800">
                 </div>
             </div>
 
@@ -116,7 +116,7 @@
 
             <div class="flex flex-col">
                 <label class="block text-xs font-semibold text-slate-700 mb-1">Consultation Transcript (Editable):</label>
-                <textarea id="dialogueInput" rows="4" class="w-full p-3 text-xs bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none font-mono text-slate-700 leading-relaxed">क्या नाम है क्या तकलीफ है आपको मेरा नाम हरीश है मेरी उम्र 18 साल है मुझे कल से तेज बुखार है पेट में बहुत दर्द हो रहा है सर दर्द हो रहा है चक्कर आ रहा है और कुछ भी खा रहा हूं तो तुरंत उल्टी हो जा रही है खाना हजम नहीं हो रहा है ठीक है दवाई लिख रहा हूं जाकर ब्लड टेस्ट कर लो और आज जोहर हल्का खाना खा तो और आराम करना</textarea>
+                <textarea id="dialogueInput" rows="4" class="w-full p-3 text-xs bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none font-mono text-slate-700 leading-relaxed">मेरा नाम राजीव है मेरे सिर में बहुत दर्द है मैं बुखार है जुखाम है खांसी भी आ रही है और चक्कर भी आ रहा है</textarea>
             </div>
         </section>
 
@@ -149,27 +149,27 @@
                 <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 my-4 text-xs grid grid-cols-2 sm:grid-cols-4 gap-3 shadow-inner">
                     <div>
                         <span class="text-slate-400 block text-[9px] uppercase font-bold tracking-wider">Patient Name</span>
-                        <span id="dispPatientName" class="font-bold text-slate-900 text-xs sm:text-sm">Harish</span>
+                        <span id="dispPatientName" class="font-bold text-slate-900 text-xs sm:text-sm">Rajeev</span>
                     </div>
                     <div>
                         <span class="text-slate-400 block text-[9px] uppercase font-bold tracking-wider">Age / Gender</span>
-                        <span id="dispPatientAge" class="font-bold text-slate-900 text-xs sm:text-sm">18 Yrs / Male</span>
+                        <span id="dispPatientAge" class="font-bold text-slate-900 text-xs sm:text-sm">28 Yrs / Male</span>
                     </div>
                     <div>
                         <span class="text-slate-400 block text-[9px] uppercase font-bold tracking-wider">Consult Date</span>
-                        <span id="prescriptionTimestamp" class="font-bold text-slate-900 text-xs sm:text-sm">20 Oct 2026</span>
+                        <span id="prescriptionTimestamp" class="font-bold text-slate-900 text-xs sm:text-sm">24 Oct 2026</span>
                     </div>
                     <div>
                         <span class="text-slate-400 block text-[9px] uppercase font-bold tracking-wider">ABHA ID</span>
-                        <span id="dispAbhaId" class="font-bold text-indigo-600 text-[11px] font-mono">91-2026-1801-18</span>
+                        <span id="dispAbhaId" class="font-bold text-indigo-600 text-[11px] font-mono">91-2026-2801-28</span>
                     </div>
                 </div>
 
                 <!-- Vitals Card -->
                 <div class="bg-amber-50/60 border border-amber-200/80 rounded-xl p-3 my-3 text-xs flex flex-wrap items-center justify-between gap-2 shadow-xs">
                     <div class="flex items-center gap-3 sm:gap-4 flex-wrap">
-                        <div><strong class="text-slate-600">BP:</strong> <span class="font-bold text-slate-900">110/76 mmHg</span></div>
-                        <div><strong class="text-slate-600">Temp:</strong> <span class="font-bold text-slate-900">101.8 °F</span></div>
+                        <div><strong class="text-slate-600">BP:</strong> <span class="font-bold text-slate-900">120/80 mmHg</span></div>
+                        <div><strong class="text-slate-600">Temp:</strong> <span class="font-bold text-slate-900">100.4 °F</span></div>
                         <div><strong class="text-slate-600">SpO2:</strong> <span class="font-bold text-slate-900">98%</span></div>
                     </div>
                     <span class="text-[10px] text-amber-800 font-semibold italic">Vitals verified by assistant</span>
@@ -179,7 +179,7 @@
                 <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 my-3 text-xs">
                     <span class="text-[10px] font-bold text-indigo-900 uppercase tracking-wider block mb-1">Chief Complaints (S)</span>
                     <p id="outChief" class="text-slate-800 font-medium text-xs sm:text-sm leading-relaxed">
-                        High grade fever, acute abdominal pain, severe headache, dizziness (chakar), and immediate post-prandial vomiting with indigestion.
+                        Fever and severe headache, acute coryza (cold / runny nose), persistent cough, and dizziness / vertigo.
                     </p>
                 </div>
 
@@ -191,15 +191,19 @@
                     </div>
                     <div id="icdCodesContainer" class="space-y-1.5">
                         <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-slate-200">
-                            <span class="font-semibold text-slate-800">R50.9 - Fever, unspecified</span>
+                            <span class="font-semibold text-slate-800">R50.9 - Fever & R51 - Headache</span>
                             <span class="text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded">Primary</span>
                         </div>
                         <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-slate-200">
-                            <span class="font-semibold text-slate-800">R10.4 - Abdominal pain, unspecified</span>
+                            <span class="font-semibold text-slate-800">J00 - Acute nasopharyngitis [common cold]</span>
                             <span class="text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded">Secondary</span>
                         </div>
                         <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-slate-200">
-                            <span class="font-semibold text-slate-800">R11.1 - Vomiting, unspecified</span>
+                            <span class="font-semibold text-slate-800">R05 - Cough</span>
+                            <span class="text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded">Secondary</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-slate-200">
+                            <span class="font-semibold text-slate-800">R42 - Dizziness and giddiness</span>
                             <span class="text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded">Secondary</span>
                         </div>
                     </div>
@@ -232,21 +236,28 @@
                                     <td class="p-2.5 font-bold text-slate-900 med-name">Tab. Paracetamol 650mg</td>
                                     <td class="p-2.5 text-indigo-900 font-medium med-dosage">1 Tablet • 1-1-1 (Three Times Daily)</td>
                                     <td class="p-2.5 med-duration">3 Days</td>
-                                    <td class="p-2.5 text-slate-600 med-instructions">After Meals (For Fever)</td>
+                                    <td class="p-2.5 text-slate-600 med-instructions">After Meals (For Pyrexia & Headache)</td>
                                 </tr>
                                 <tr class="hover:bg-slate-50">
                                     <td class="p-2.5 font-medium text-slate-500">2</td>
-                                    <td class="p-2.5 font-bold text-slate-900 med-name">Tab. Ondansetron 4mg</td>
-                                    <td class="p-2.5 text-indigo-900 font-medium med-dosage">1 Tablet • As Needed (SOS)</td>
+                                    <td class="p-2.5 font-bold text-slate-900 med-name">Tab. Cetirizine 10mg</td>
+                                    <td class="p-2.5 text-indigo-900 font-medium med-dosage">1 Tablet • 0-0-1 (At Bedtime)</td>
                                     <td class="p-2.5 med-duration">3 Days</td>
-                                    <td class="p-2.5 text-slate-600 med-instructions">Before Food (For Vomiting/Dizziness)</td>
+                                    <td class="p-2.5 text-slate-600 med-instructions">At Night (For Cold & Sneezing)</td>
                                 </tr>
                                 <tr class="hover:bg-slate-50">
                                     <td class="p-2.5 font-medium text-slate-500">3</td>
-                                    <td class="p-2.5 font-bold text-slate-900 med-name">Tab. Pantoprazole 40mg</td>
-                                    <td class="p-2.5 text-indigo-900 font-medium med-dosage">1 Tablet • 1-0-0 (Once Daily)</td>
+                                    <td class="p-2.5 font-bold text-slate-900 med-name">Syrup Ambroxol + Dextromethorphan</td>
+                                    <td class="p-2.5 text-indigo-900 font-medium med-dosage">10 ml • 1-1-1 (Three Times Daily)</td>
                                     <td class="p-2.5 med-duration">5 Days</td>
-                                    <td class="p-2.5 text-slate-600 med-instructions">Empty Stomach (For Indigestion)</td>
+                                    <td class="p-2.5 text-slate-600 med-instructions">After Meals (For Cough Relief)</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-2.5 font-medium text-slate-500">4</td>
+                                    <td class="p-2.5 font-bold text-slate-900 med-name">Tab. Betahistine 8mg</td>
+                                    <td class="p-2.5 text-indigo-900 font-medium med-dosage">1 Tablet • 1-0-1 (Twice Daily)</td>
+                                    <td class="p-2.5 med-duration">3 Days</td>
+                                    <td class="p-2.5 text-slate-600 med-instructions">After Meals (For Dizziness & Vertigo)</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -257,9 +268,8 @@
                 <div class="bg-indigo-50/40 border border-indigo-100 rounded-xl p-3.5 my-4 text-xs space-y-1.5">
                     <span class="text-[10px] font-bold text-indigo-900 uppercase tracking-wider block mb-1">Advice & Investigations:</span>
                     <ul class="list-disc pl-4 space-y-1 text-slate-700">
-                        <li><strong>Lab Investigation:</strong> Complete Blood Count (CBC) & Widal / Typhoid Test recommended.</li>
-                        <li>Eat light, easily digestible food (लगातार हल्का खाना लें - दलिया, खिचड़ी).</li>
-                        <li>Maintain strict hydration and take proper bed rest.</li>
+                        <li><strong>Lab Investigation:</strong> Complete Blood Count (CBC) recommended if symptoms persist beyond 3 days.</li>
+                        <li>Drink plenty of warm fluids and take proper bed rest (पर्याप्त गर्म पानी पिएं और आराम करें).</li>
                     </ul>
                 </div>
             </div>
@@ -331,7 +341,7 @@
         const now = new Date();
         prescriptionTimestamp.innerText = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 
-        // --- Clinical Guidelines & Auto-Suggestion Mapping Engine ---
+        // --- Enhanced Clinical Guidelines & Auto-Suggestion Mapping Engine ---
         processBtn.addEventListener("click", () => {
             const rawText = dialogueInput.value.trim();
             const text = rawText.toLowerCase();
@@ -345,9 +355,9 @@
 
             setTimeout(() => {
                 let parsedName = patientNameInput.value.trim() || "New Patient";
-                let parsedAge = patientAgeInput.value.trim() || "18 Yrs / Male";
+                let parsedAge = patientAgeInput.value.trim() || "28 Yrs / Male";
 
-                // Heuristic extraction for Hindi transcripts
+                // Heuristic extraction for Hindi transcripts (e.g., "मेरा नाम राजीव है")
                 const nameMatch = rawText.match(/मेरा नाम\s+([^\s]+)\s+है/i);
                 if (nameMatch && nameMatch[1]) {
                     parsedName = nameMatch[1];
@@ -368,60 +378,81 @@
                 // Clear old prescription table rows before injecting new items
                 prescriptionTableBody.innerHTML = "";
 
-                let chief = "Fever, body ache, acute discomfort, and associated symptoms as per clinical guidelines.";
+                let chiefParts = [];
                 let icdHTML = "";
                 let meds = [];
 
-                // Guideline Rule 1: Fever / Pyrexia
-                if (text.includes("बुखार") || text.includes("fever") || text.includes("तेज बुखार")) {
+                // 1. Fever & Bodyache / Headache (Paracetamol 650mg)
+                if (text.includes("बुखार") || text.includes("fever") || text.includes("सिर में दर्द") || text.includes("सिरदर्द") || text.includes("headache")) {
+                    chiefParts.push("Fever and severe headache");
                     meds.push({ 
                         name: "Tab. Paracetamol 650mg", 
                         dosage: "1 Tablet • 1-1-1 (Three Times Daily)", 
                         duration: "3 Days", 
-                        inst: "After Meals (For Pyrexia / Fever Management)" 
+                        inst: "After Meals (For Pyrexia & Headache)" 
                     });
                     icdHTML += `
                         <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-slate-200">
-                            <span class="font-semibold text-slate-800">R50.9 - Fever, unspecified (Pyrexia)</span>
+                            <span class="font-semibold text-slate-800">R50.9 - Fever & R51 - Headache</span>
                             <span class="text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded">Primary</span>
                         </div>
                     `;
                 }
 
-                // Guideline Rule 2: Vomiting / Nausea / Dizziness
-                if (text.includes("उल्टी") || text.includes("vomit") || text.includes("चक्कर") || text.includes("dizziness")) {
+                // 2. Cold / Runny Nose / Sneezing (Antihistamine / Cetirizine 10mg)
+                if (text.includes("जुकाम") || text.includes("cold") || text.includes("sore throat") || text.includes("nak")) {
+                    chiefParts.push("Acute coryza (cold / runny nose)");
                     meds.push({ 
-                        name: "Tab. Ondansetron 4mg", 
-                        dosage: "1 Tablet • As Needed (SOS)", 
+                        name: "Tab. Cetirizine 10mg", 
+                        dosage: "1 Tablet • 0-0-1 (At Bedtime)", 
                         duration: "3 Days", 
-                        inst: "Before Food (Antiemetic for Nausea/Vomiting)" 
+                        inst: "At Night (For Cold & Sneezing)" 
                     });
                     icdHTML += `
                         <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-slate-200">
-                            <span class="font-semibold text-slate-800">R11.1 - Vomiting and Nausea</span>
+                            <span class="font-semibold text-slate-800">J00 - Acute nasopharyngitis [common cold]</span>
                             <span class="text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded">Secondary</span>
                         </div>
                     `;
                 }
 
-                // Guideline Rule 3: Abdominal Pain / Gastric Distress / Indigestion
-                if (text.includes("पेट में दर्द") || text.includes("gas") || text.includes("हजम") || text.includes("indigestion") || text.includes("दर्द")) {
+                // 3. Cough (Cough Syrup / Dextromethorphan)
+                if (text.includes("खांसी") || text.includes("cough")) {
+                    chiefParts.push("Persistent cough");
                     meds.push({ 
-                        name: "Tab. Pantoprazole 40mg", 
-                        dosage: "1 Tablet • 1-0-0 (Once Daily)", 
+                        name: "Syrup Ambroxol + Dextromethorphan", 
+                        dosage: "10 ml • 1-1-1 (Three Times Daily)", 
                         duration: "5 Days", 
-                        inst: "Empty Stomach (For Gastric Distress & Acidity)" 
+                        inst: "After Meals (For Cough Relief)" 
                     });
                     icdHTML += `
                         <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-slate-200">
-                            <span class="font-semibold text-slate-800">R10.4 - Abdominal and pelvic pain</span>
+                            <span class="font-semibold text-slate-800">R05 - Cough</span>
                             <span class="text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded">Secondary</span>
                         </div>
                     `;
                 }
 
-                // Fallback default medicine if transcript contains general complaints
+                // 4. Dizziness / Vertigo / Vomiting (Betahistine)
+                if (text.includes("चक्कर") || text.includes("dizziness") || text.includes("vertigo") || text.includes("उल्टी")) {
+                    chiefParts.push("Dizziness / Vertigo");
+                    meds.push({ 
+                        name: "Tab. Betahistine 8mg", 
+                        dosage: "1 Tablet • 1-0-1 (Twice Daily)", 
+                        duration: "3 Days", 
+                        inst: "After Meals (For Dizziness & Vertigo)" 
+                    });
+                    icdHTML += `
+                        <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-slate-200">
+                            <span class="font-semibold text-slate-800">R42 - Dizziness and giddiness</span>
+                            <span class="text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded">Secondary</span>
+                        </div>
+                    `;
+                }
+
+                // Fallback default medicine if no specific keywords match
                 if (meds.length === 0) {
+                    chiefParts.push("General acute viral illness symptoms");
                     meds.push({ 
                         name: "Tab. Paracetamol 650mg", 
                         dosage: "1 Tablet • As Needed", 
@@ -436,7 +467,7 @@
                     `;
                 }
 
-                outChief.innerText = chief;
+                outChief.innerText = chiefParts.join(", ") + " as reported in patient dialogue.";
                 icdCodesContainer.innerHTML = icdHTML;
 
                 meds.forEach((m, idx) => {
@@ -453,7 +484,7 @@
                 });
 
                 processBtn.innerHTML = "⚡ Extract Clinical Note & Auto-Suggest Guidelines";
-                alert(`✨ ${parsedName} के लिए चिकित्सा दिशानिर्देशों (Medical Guidelines) के अनुसार दवाइयां और ICD-10 कोड स्वतः जनरेट कर दिए गए हैं!`);
+                alert(`✨ ${parsedName} के लिए सिरदर्द, बुखार, जुकाम, खांसी और चक्कर के लक्षणों के अनुसार सही दवाइयां और ICD-10 कोड अपडेट कर दिए गए हैं!`);
             }, 500);
         });
 
