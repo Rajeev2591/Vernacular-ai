@@ -233,7 +233,7 @@ saveMedicinesBtn.addEventListener("click", () => {
     alert("✅ दवाइयां और डोज़ सफलतापूर्वक अपडेट कर दिए गए हैं!");
 });
 
-// --- Fixed Web Speech API Recording Implementation for Mobile & Desktop ---
+// --- Resilient Mobile-Optimized Speech Recognition Engine ---
 const recordMicBtn = document.getElementById("recordMicBtn");
 const micIcon = document.getElementById("micIcon");
 const micBtnText = document.getElementById("micBtnText");
@@ -244,10 +244,15 @@ let isRecording = false;
 let manualStop = false;
 let sessionFinalTranscript = "";
 
+// Check for mobile device agent to fine-tune speech parameters
+const isMobileDevice = /Mobi|Android/i.test(navigator.userAgent);
+
 if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     recognition = new SpeechRecognition();
-    recognition.continuous = true;       
+    
+    // On mobile, setting continuous to false or handling short bursts prevents the 2-second timeout crash
+    recognition.continuous = !isMobileDevice; 
     recognition.interimResults = true;   
     recognition.lang = 'hi-IN';
 
@@ -281,17 +286,21 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
     };
 
     recognition.onerror = (event) => {
-        console.error("Speech recognition error", event.error);
+        console.warn("Speech recognition warning/error:", event.error);
     };
 
     recognition.onend = () => {
+        // If mobile cuts off due to silence, safely attempt restart after a short delay
         if (!manualStop && isRecording) {
-            try {
-                recognition.start();
-                return;
-            } catch (err) {
-                console.log("Restart blocked or already started");
-            }
+            setTimeout(() => {
+                try {
+                    recognition.start();
+                } catch (err) {
+                    console.log("Mobile safe restart blocked:", err);
+                    stopListeningState();
+                }
+            }, 300);
+            return;
         }
         stopListeningState();
     };
@@ -320,14 +329,15 @@ recordMicBtn.addEventListener("click", () => {
     } else {
         manualStop = false;
         
-        // Clean wipe for fresh session transcript
+        // Fully clear out old text fields and session buffer when starting fresh
         dialogueInput.value = "";
         sessionFinalTranscript = "";
 
         try { 
             recognition.start(); 
         } catch (err) { 
-            console.error(err); 
+            console.error("Error starting recognition:", err); 
+            stopListeningState();
         }
     }
 });
