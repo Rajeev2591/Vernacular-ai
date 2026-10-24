@@ -233,7 +233,7 @@ saveMedicinesBtn.addEventListener("click", () => {
     alert("✅ दवाइयां और डोज़ सफलतापूर्वक अपडेट कर दिए गए हैं!");
 });
 
-// --- Fixed Web Speech API Recording Implementation for Mobile ---
+// --- Fixed Web Speech API Recording Implementation for Mobile & Desktop ---
 const recordMicBtn = document.getElementById("recordMicBtn");
 const micIcon = document.getElementById("micIcon");
 const micBtnText = document.getElementById("micBtnText");
@@ -242,7 +242,7 @@ const recStatusLabel = document.getElementById("recStatusLabel");
 let recognition = null;
 let isRecording = false;
 let manualStop = false;
-let finalTranscriptAccumulated = "";
+let sessionFinalTranscript = "";
 
 if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -262,21 +262,22 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
 
     recognition.onresult = (event) => {
         let interimTranscript = "";
-        let currentFinal = "";
+        let newFinalThisBatch = "";
 
         for (let i = event.resultIndex; i < event.results.length; ++i) {
+            const transcriptChunk = event.results[i][0].transcript;
             if (event.results[i].isFinal) {
-                currentFinal += event.results[i][0].transcript + " ";
+                newFinalThisBatch += transcriptChunk + " ";
             } else {
-                interimTranscript += event.results[i][0].transcript;
+                interimTranscript += transcriptChunk;
             }
         }
 
-        if (currentFinal) {
-            finalTranscriptAccumulated += currentFinal;
+        if (newFinalThisBatch) {
+            sessionFinalTranscript += newFinalThisBatch;
         }
 
-        dialogueInput.value = (finalTranscriptAccumulated + interimTranscript).trim();
+        dialogueInput.value = (sessionFinalTranscript + interimTranscript).trim();
     };
 
     recognition.onerror = (event) => {
@@ -319,9 +320,9 @@ recordMicBtn.addEventListener("click", () => {
     } else {
         manualStop = false;
         
-        // FIX: Clear out the transcript box and buffer entirely for a fresh recording session
+        // Wipe out textarea and memory buffer immediately when starting a fresh session
         dialogueInput.value = "";
-        finalTranscriptAccumulated = "";
+        sessionFinalTranscript = "";
 
         try { 
             recognition.start(); 
@@ -353,7 +354,7 @@ ttsBtn.addEventListener("click", () => {
 
     const utterance = new SpeechSynthesisUtterance(textToSpeak);
     utterance.lang = 'hi-IN';
-    ttsBtn.innerHTML = "🔊 Stop Audio";
+    ttsBtn.innerHTML = "⏹️ Stop Audio";
 
     utterance.onend = () => { ttsBtn.innerHTML = "🔊 Listen Summary"; };
     utterance.onerror = () => { ttsBtn.innerHTML = "🔊 Listen Summary"; };
