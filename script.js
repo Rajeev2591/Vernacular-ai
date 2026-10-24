@@ -233,7 +233,7 @@ saveMedicinesBtn.addEventListener("click", () => {
     alert("✅ दवाइयां और डोज़ सफलतापूर्वक अपडेट कर दिए गए हैं!");
 });
 
-// --- Resilient Mobile-Optimized Speech Recognition Engine ---
+// --- Resilient Mobile-First Speech Recognition Engine ---
 const recordMicBtn = document.getElementById("recordMicBtn");
 const micIcon = document.getElementById("micIcon");
 const micBtnText = document.getElementById("micBtnText");
@@ -241,74 +241,46 @@ const recStatusLabel = document.getElementById("recStatusLabel");
 
 let recognition = null;
 let isRecording = false;
-let manualStop = false;
-let sessionFinalTranscript = "";
 
-// Check for mobile device agent to fine-tune speech parameters
-const isMobileDevice = /Mobi|Android/i.test(navigator.userAgent);
+const isMobile = /Mobi|Android/i.test(navigator.userAgent);
 
 if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     recognition = new SpeechRecognition();
     
-    // On mobile, setting continuous to false or handling short bursts prevents the 2-second timeout crash
-    recognition.continuous = !isMobileDevice; 
+    // Disabling continuous mode on mobile stops the 2-second timeout crash loop
+    recognition.continuous = !isMobile; 
     recognition.interimResults = true;   
     recognition.lang = 'hi-IN';
 
     recognition.onstart = () => {
         isRecording = true;
         micIcon.innerText = "⏹️";
-        micBtnText.innerText = "Stop Scribing";
+        micBtnText.innerText = isMobile ? "Listening... (Tap to Stop)" : "Stop Scribing";
         recStatusLabel.innerText = "🔴 Ambient Recording Active...";
         recordMicBtn.classList.remove("bg-rose-600", "hover:bg-rose-700");
         recordMicBtn.classList.add("bg-slate-800", "hover:bg-slate-900", "animate-pulse");
     };
 
     recognition.onresult = (event) => {
-        let interimTranscript = "";
-        let newFinalThisBatch = "";
-
-        for (let i = event.resultIndex; i < event.results.length; ++i) {
-            const transcriptChunk = event.results[i][0].transcript;
-            if (event.results[i].isFinal) {
-                newFinalThisBatch += transcriptChunk + " ";
-            } else {
-                interimTranscript += transcriptChunk;
-            }
+        let transcript = "";
+        for (let i = 0; i < event.results.length; ++i) {
+            transcript += event.results[i][0].transcript + " ";
         }
-
-        if (newFinalThisBatch) {
-            sessionFinalTranscript += newFinalThisBatch;
-        }
-
-        dialogueInput.value = (sessionFinalTranscript + interimTranscript).trim();
+        dialogueInput.value = transcript.trim();
     };
 
     recognition.onerror = (event) => {
-        console.warn("Speech recognition warning/error:", event.error);
+        console.warn("Speech recognition error:", event.error);
     };
 
     recognition.onend = () => {
-        // If mobile cuts off due to silence, safely attempt restart after a short delay
-        if (!manualStop && isRecording) {
-            setTimeout(() => {
-                try {
-                    recognition.start();
-                } catch (err) {
-                    console.log("Mobile safe restart blocked:", err);
-                    stopListeningState();
-                }
-            }, 300);
-            return;
-        }
         stopListeningState();
     };
 }
 
 function stopListeningState() {
     isRecording = false;
-    manualStop = false;
     micIcon.innerText = "🔴";
     micBtnText.innerText = "Start Listening";
     recStatusLabel.innerText = "Ambient Voice Scribe";
@@ -323,20 +295,16 @@ recordMicBtn.addEventListener("click", () => {
     }
 
     if (isRecording) {
-        manualStop = true;
         isRecording = false;
         recognition.stop();
     } else {
-        manualStop = false;
-        
-        // Fully clear out old text fields and session buffer when starting fresh
+        // Hard wipe input box on every fresh start to eliminate lingering previous transcripts
         dialogueInput.value = "";
-        sessionFinalTranscript = "";
 
         try { 
             recognition.start(); 
         } catch (err) { 
-            console.error("Error starting recognition:", err); 
+            console.error("Recognition start blocked:", err); 
             stopListeningState();
         }
     }
