@@ -372,7 +372,7 @@
                 let icdHTML = "";
                 let meds = [];
 
-                // Guideline Rule 1: Fever / Pyrexia (Standard Protocol: Paracetamol 650mg q.i.d / t.i.d)
+                // Guideline Rule 1: Fever / Pyrexia
                 if (text.includes("बुखार") || text.includes("fever") || text.includes("तेज बुखार")) {
                     meds.push({ 
                         name: "Tab. Paracetamol 650mg", 
@@ -388,7 +388,7 @@
                     `;
                 }
 
-                // Guideline Rule 2: Vomiting / Nausea / Dizziness (Standard Protocol: Ondansetron 4mg SOS)
+                // Guideline Rule 2: Vomiting / Nausea / Dizziness
                 if (text.includes("उल्टी") || text.includes("vomit") || text.includes("चक्कर") || text.includes("dizziness")) {
                     meds.push({ 
                         name: "Tab. Ondansetron 4mg", 
@@ -404,7 +404,7 @@
                     `;
                 }
 
-                // Guideline Rule 3: Abdominal Pain / Gastric Distress / Indigestion (Standard Protocol: Pantoprazole 40mg or Antacid)
+                // Guideline Rule 3: Abdominal Pain / Gastric Distress / Indigestion
                 if (text.includes("पेट में दर्द") || text.includes("gas") || text.includes("हजम") || text.includes("indigestion") || text.includes("दर्द")) {
                     meds.push({ 
                         name: "Tab. Pantoprazole 40mg", 
