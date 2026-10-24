@@ -264,7 +264,6 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
         let interimTranscript = "";
         let currentFinal = "";
 
-        // Properly loop through event results to prevent text duplication loops
         for (let i = event.resultIndex; i < event.results.length; ++i) {
             if (event.results[i].isFinal) {
                 currentFinal += event.results[i][0].transcript + " ";
@@ -277,7 +276,6 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
             finalTranscriptAccumulated += currentFinal;
         }
 
-        // Display combined past finalized text + real-time interim chunks
         dialogueInput.value = (finalTranscriptAccumulated + interimTranscript).trim();
     };
 
@@ -286,7 +284,6 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
     };
 
     recognition.onend = () => {
-        // If mobile cuts the mic automatically and user didn't press stop, safely keep the stream alive
         if (!manualStop && isRecording) {
             try {
                 recognition.start();
@@ -321,7 +318,11 @@ recordMicBtn.addEventListener("click", () => {
         recognition.stop();
     } else {
         manualStop = false;
-        finalTranscriptAccumulated = dialogueInput.value.trim() ? dialogueInput.value.trim() + " " : "";
+        
+        // FIX: Clear out the transcript box and buffer entirely for a fresh recording session
+        dialogueInput.value = "";
+        finalTranscriptAccumulated = "";
+
         try { 
             recognition.start(); 
         } catch (err) { 
@@ -352,7 +353,7 @@ ttsBtn.addEventListener("click", () => {
 
     const utterance = new SpeechSynthesisUtterance(textToSpeak);
     utterance.lang = 'hi-IN';
-    ttsBtn.innerHTML = "⏹️ Stop Audio";
+    ttsBtn.innerHTML = "🔊 Stop Audio";
 
     utterance.onend = () => { ttsBtn.innerHTML = "🔊 Listen Summary"; };
     utterance.onerror = () => { ttsBtn.innerHTML = "🔊 Listen Summary"; };
